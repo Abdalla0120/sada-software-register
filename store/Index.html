@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base target="_top">
+<title>SADA App Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* Layout idea: an engineering drawing sheet. Title block header, drafting-grid paper,
+   each app is a numbered "sheet" with its spec table and one clear download action. */
+:root {
+  --paper: #eef2f1;
+  --sheet: #fbfcfc;
+  --ink: #12253a;
+  --muted: #5a6b7c;
+  --line: #c9d4da;
+  --grid: rgba(18, 37, 58, 0.055);
+  --accent: #d9541e;
+  --accent-ink: #ffffff;
+  --blue: #1f5f9e;
+  --blue-soft: rgba(31, 95, 158, 0.09);
+  --new: #2f8a4f;
+  --shadow: 0 1px 0 rgba(18, 37, 58, 0.04), 0 10px 26px -16px rgba(18, 37, 58, 0.35);
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0b1826;
+    --sheet: #102235;
+    --ink: #e4edf5;
+    --muted: #93a7ba;
+    --line: #23405c;
+    --grid: rgba(120, 180, 230, 0.07);
+    --accent: #ff7a3d;
+    --accent-ink: #1a0d05;
+    --blue: #7fb8ec;
+    --blue-soft: rgba(127, 184, 236, 0.12);
+    --new: #5fd08a;
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 12px 30px -16px rgba(0, 0, 0, 0.75);
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 56px; display: grid; gap: 26px; }
+
+/* Title block */
+.titleblock { display: grid; grid-template-columns: 1fr auto; border: 2px solid var(--ink); background: var(--sheet); box-shadow: var(--shadow); }
+.tb-main { padding: 24px 28px 22px; display: grid; gap: 10px; border-right: 2px solid var(--ink); }
+.brand { display: flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.brand-mark { width: 30px; height: 30px; display: grid; place-items: center; background: var(--ink); color: var(--sheet); font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+h1 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(38px, 6vw, 64px); line-height: 0.95; text-transform: uppercase; text-wrap: balance; }
+h1 span { color: var(--accent); }
+.lede { margin: 0; max-width: 60ch; color: var(--muted); }
+.tb-cells { display: grid; grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+.tb-cell { padding: 12px 16px; border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; gap: 2px; align-content: start; }
+.tb-cell:nth-child(odd) { border-left: 0; }
+.tb-cell:nth-last-child(-n+2) { border-bottom: 0; }
+.tb-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.tb-value { font-family: var(--font-display); font-weight: 600; font-size: 26px; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.tb-value.sm { font-size: 17px; }
+
+/* Toolbar */
+.toolbar { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--font-mono); font-size: 12.5px; padding: 7px 12px; border: 1px solid var(--line); background: var(--sheet); color: var(--ink); border-radius: 2px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+.chip .n { color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.chip[aria-pressed="true"] .n { color: inherit; opacity: 0.7; }
+.search { position: relative; flex: 0 1 280px; min-width: 200px; }
+.search input { width: 100%; font: 14px var(--font-body); padding: 9px 12px 9px 34px; border: 1px solid var(--line); background: var(--sheet); color: var(--ink); border-radius: 2px; }
+.search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 13px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.notice { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-left: 3px solid var(--blue); background: var(--blue-soft); font-size: 13.5px; }
+.notice i { color: var(--blue); margin-top: 3px; }
+
+/* Groups and cards */
+.group { display: grid; gap: 14px; }
+.group-head { display: flex; align-items: baseline; gap: 14px; }
+.group-head h2 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; }
+.group-head .rule { flex: 1; height: 1px; background: var(--line); }
+.group-head .count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+
+.card { background: var(--sheet); border: 1px solid var(--line); box-shadow: var(--shadow); display: grid; grid-template-rows: auto 1fr auto auto; min-width: 0; transition: transform 160ms ease, border-color 160ms ease; }
+.card:hover { transform: translateY(-2px); border-color: var(--ink); }
+.card-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px dashed var(--line); font-family: var(--font-mono); font-size: 12px; }
+.code { color: var(--accent); font-weight: 500; letter-spacing: 0.04em; }
+.badge { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 7px; border: 1px solid currentColor; color: var(--new); }
+.badge.beta { color: var(--accent); }
+.card-body { padding: 16px; display: grid; grid-template-columns: 52px 1fr; gap: 14px; align-items: start; }
+.icon { width: 52px; height: 52px; display: grid; place-items: center; border: 1.5px solid var(--ink); font-size: 22px; color: var(--ink); background: repeating-linear-gradient(135deg, transparent 0 6px, var(--grid) 6px 7px); }
+.card h3 { margin: 0 0 4px; font-family: var(--font-display); font-weight: 700; font-size: 25px; line-height: 1.05; text-transform: uppercase; text-wrap: balance; }
+.card p { margin: 0; color: var(--muted); font-size: 14px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 12px; }
+.tag { font-family: var(--font-mono); font-size: 11px; padding: 3px 7px; border: 1px solid var(--line); border-radius: 2px; white-space: nowrap; }
+.tag.v { border-color: transparent; background: var(--blue-soft); color: var(--blue); }
+.spec { margin: 0 16px; display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); }
+.spec div { padding: 6px 10px; border-left: 1px solid var(--line); display: grid; min-width: 0; }
+.spec div:first-child { border-left: 0; }
+.spec dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.spec dd { margin: 0; font-family: var(--font-mono); font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.actions { padding: 16px; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; font-family: var(--font-display); font-weight: 600; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; padding: 11px 14px; border-radius: 2px; text-decoration: none; background: var(--accent); color: var(--accent-ink); border: 1.5px solid var(--accent); transition: filter 140ms ease; }
+.btn:hover { filter: brightness(1.08); }
+.btn small { font-family: var(--font-mono); font-size: 11.5px; font-weight: 400; letter-spacing: 0; opacity: 0.85; text-transform: none; }
+
+.empty { display: none; padding: 28px; text-align: center; color: var(--muted); border: 1px dashed var(--line); background: var(--sheet); font-family: var(--font-mono); font-size: 13px; }
+footer { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); border-top: 2px solid var(--ink); padding-top: 12px; }
+footer a { color: var(--blue); }
+
+@media (max-width: 760px) {
+  .titleblock { grid-template-columns: 1fr; }
+  .tb-main { border-right: 0; border-bottom: 2px solid var(--ink); }
+  .grid { grid-template-columns: 1fr; }
+  .search { flex: 1 1 100%; }
+}
+@media (max-width: 420px) { .wrap { padding: 20px 16px 40px; } }
+@media (prefers-reduced-motion: reduce) { .card, .btn { transition: none; } .card:hover { transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="titleblock">
+    <div class="tb-main">
+      <div class="brand"><span class="brand-mark">S</span>SADA Engineering</div>
+      <h1>SADA <span>App</span> Store</h1>
+      <p class="lede">Revit add-ins, analysis tools and helper apps for structural and architectural work. Pick a tool, download it, and run the installer.</p>
+    </div>
+    <div class="tb-cells">
+      <div class="tb-cell"><span class="tb-label">Apps</span><span class="tb-value" id="stat-apps">7</span></div>
+      <div class="tb-cell"><span class="tb-label">Revit</span><span class="tb-value sm">2023&ndash;2027</span></div>
+      <div class="tb-cell"><span class="tb-label">Platforms</span><span class="tb-value sm">Windows &middot; Android</span></div>
+      <div class="tb-cell"><span class="tb-label">Updated</span><span class="tb-value sm">06 Nov 2026</span></div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="filters" role="group" aria-label="Filter by category" id="filters"></div>
+    <label class="search" for="q"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input id="q" type="search" placeholder="Search apps or Revit year" aria-label="Search apps" autocomplete="off">
+    </label>
+  </div>
+
+  <div class="notice" role="note">
+    <i class="fa-solid fa-key" aria-hidden="true"></i>
+    <span>The Revit add-ins ask for a <b>SADA activation key</b> the first time they start. One key works for the Struct Toolbox, Steel Toolbox and Parapet Tool. If Windows SmartScreen warns about an installer, choose <b>More info &gt; Run anyway</b>.</span>
+  </div>
+
+  <main id="store"></main>
+  <div class="empty" id="empty">No app matches that search.</div>
+
+  <footer>
+    <span>&copy; 2026 SADA Engineering</span>
+    <span>Downloads are served from Google Drive</span>
+  </footer>
+</div>
+
+<script>
+var DL = "https://drive.google.com/uc?export=download&id=";
+var APPS = [
+  { code: "S-01", name: "SADA Struct Toolbox", group: "revit", icon: "fa-solid fa-building-columns",
+    desc: "Automatic dimensioning for concrete columns, beams, grids and foundations, plus batch export, revisions and model checks.",
+    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Concrete"], file: "Installer .exe", size: "84.2 MB", version: "Selectable versions",
+    id: "1xX4sOrWXkydRVvqaC8bpv-Kb5RL10BC-" },
+  { code: "S-02", name: "SADA Steel Toolbox", group: "revit", icon: "fa-solid fa-i-cursor", badge: "New",
+    desc: "Steel edition: centreline dimensions, piece marks, steel takeoff, member check (AISC 360 / EC3) and SAP2000 export.",
+    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Steel", "Pre-release"], file: "Zip + Install.bat", size: "1.4 MB", version: "1.0.0",
+    id: "1YhNZGA9vMR5EkdhstGr-Rb-yN5gWu-iD" },
+  { code: "A-01", name: "SADA Arch Toolbox", group: "revit", icon: "fa-solid fa-building",
+    desc: "Architectural edition: grids, dimensions, overkill cleanup, project browser and revision tools.",
+    tags: ["Revit 2023", "2024"], extra: ["Architecture"], file: "Installer .exe", size: "29.6 MB", version: "1.0",
+    id: "1g9nGeR9VZYw_ueFnIapqzNbZXF3kje0Y" },
+  { code: "R-01", name: "SADA Parapet Tool", group: "revit", icon: "fa-solid fa-border-all", badge: "New",
+    desc: "Places parapet posts and beams along the parapet walls of a linked architect model, batch by batch.",
+    tags: ["Revit 2023", "2024", "2025"], extra: ["Add-on"], file: "Zip + Install.bat", size: "0.1 MB", version: "1.0",
+    id: "1MlX1_DeUxCvfu_ZP21Hj4pbzf4tIHF83" },
+  { code: "E-01", name: "SADA ETABS Toolkit", group: "analysis", icon: "fa-solid fa-diagram-project", badge: "New",
+    desc: "Works with a running ETABS or .s2k files: builds slabs from beam bays and fixes beams that look connected but are not.",
+    tags: ["ETABS 18–22+", "SAP2000 .s2k"], extra: ["No install"], file: "Zip (.exe)", size: "0.1 MB", version: "1.0.0",
+    id: "1RbeXaCJxGNKjtj2IPCHvO7VVGlsX15tw" },
+  { code: "H-01", name: "SADA Struct Helper PC", group: "helper", icon: "fa-solid fa-desktop",
+    desc: "Desktop helper app that speeds up your structural workflow on a PC or laptop.",
+    tags: ["Windows"], extra: ["PC", "Laptop"], file: "Installer .exe", size: "54.9 MB", version: "1.0.0",
+    id: "1pRK-n3Eh4ftqBQ9dFKJy3CRwgYEz7G_6" },
+  { code: "H-02", name: "SADA Phone App", group: "helper", icon: "fa-solid fa-mobile-screen",
+    desc: "The SADA helper app for Android phones and tablets.",
+    tags: ["Android"], extra: ["Phone", "Tablet"], file: "APK", size: "65.7 MB", version: "1.0",
+    id: "1Qhxbtf09R2DwDLBSOSxMJOQGLKNiYCIX" }
+];
+var GROUPS = [
+  { id: "revit", label: "Revit add-ins" },
+  { id: "analysis", label: "Analysis tools" },
+  { id: "helper", label: "Desktop & mobile" }
+];
+
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+function card(a) {
+  var badge = a.badge ? '<span class="badge">' + esc(a.badge) + '</span>' : '<span></span>';
+  var search = [a.name, a.desc, a.file].concat(a.tags, a.extra).join(" ").toLowerCase();
+  return '<article class="card" data-search="' + esc(search) + '">' +
+    '<div class="card-top"><span class="code">' + a.code + '</span>' + badge + '</div>' +
+    '<div class="card-body"><div class="icon"><i class="' + a.icon + '" aria-hidden="true"></i></div>' +
+      '<div><h3>' + esc(a.name) + '</h3><p>' + esc(a.desc) + '</p></div></div>' +
+    '<div><div class="tags">' + a.tags.map(function (t) { return '<span class="tag v">' + esc(t) + '</span>'; }).join("") +
+      a.extra.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join("") + '</div>' +
+      '<dl class="spec"><div><dt>Version</dt><dd>' + esc(a.version) + '</dd></div><div><dt>File</dt><dd title="' + esc(a.file) + '">' + esc(a.file) + '</dd></div><div><dt>Size</dt><dd>' + esc(a.size) + '</dd></div></dl></div>' +
+    '<div class="actions"><a class="btn" href="' + DL + a.id + '" target="_blank" rel="noopener"><i class="fa-solid fa-download" aria-hidden="true"></i> Download <small>' + esc(a.size) + '</small></a></div>' +
+  '</article>';
+}
+
+var active = "all";
+function renderFilters() {
+  var opts = [{ id: "all", label: "All apps" }].concat(GROUPS);
+  document.getElementById("filters").innerHTML = opts.map(function (o) {
+    var n = o.id === "all" ? APPS.length : APPS.filter(function (a) { return a.group === o.id; }).length;
+    return '<button class="chip" type="button" data-f="' + o.id + '" aria-pressed="' + (o.id === active) + '">' + o.label + '<span class="n">' + n + '</span></button>';
+  }).join("");
+}
+function render() {
+  var q = document.getElementById("q").value.trim().toLowerCase(), shown = 0;
+  document.getElementById("store").innerHTML = GROUPS.filter(function (g) { return active === "all" || g.id === active; }).map(function (g) {
+    var items = APPS.filter(function (a) { return a.group === g.id; });
+    return '<section class="group"><div class="group-head"><h2>' + g.label + '</h2><span class="rule"></span><span class="count">' + items.length + ' apps</span></div><div class="grid">' + items.map(card).join("") + '</div></section>';
+  }).join("");
+  document.querySelectorAll("#store .group").forEach(function (sec) {
+    var vis = 0;
+    sec.querySelectorAll(".card").forEach(function (c) { var ok = !q || c.dataset.search.indexOf(q) !== -1; c.hidden = !ok; if (ok) vis++; });
+    sec.hidden = vis === 0; shown += vis;
+  });
+  document.getElementById("empty").style.display = shown ? "none" : "block";
+}
+document.getElementById("filters").addEventListener("click", function (e) {
+  var b = e.target.closest("[data-f]"); if (!b) return;
+  active = b.getAttribute("data-f"); renderFilters(); render();
+});
+document.getElementById("q").addEventListener("input", render);
+document.getElementById("stat-apps").textContent = APPS.length;
+renderFilters(); render();
+</script>
+</body>
+</html>
