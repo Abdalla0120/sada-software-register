@@ -263,7 +263,7 @@ footer { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-
       <p class="tb-lede">Every Revit add-in, analysis tool and helper app, each kept in its own private GitHub repository. Download the full source of any project as a zip, or open it on GitHub.</p>
     </div>
     <div class="tb-cells" aria-label="Register summary">
-      <div class="tb-cell"><span class="tb-label">Projects</span><span class="tb-value" id="stat-projects">13</span></div>
+      <div class="tb-cell"><span class="tb-label">Projects</span><span class="tb-value" id="stat-projects">14</span></div>
       <div class="tb-cell"><span class="tb-label">Visibility</span><span class="tb-value small">Private</span></div>
       <div class="tb-cell"><span class="tb-label">Revit range</span><span class="tb-value small">2023&ndash;2027</span></div>
       <div class="tb-cell"><span class="tb-label">Owner</span><span class="tb-value small">Abdalla0120</span></div>
@@ -311,8 +311,12 @@ const PROJECTS = [
     desc: "Steel edition with its own ribbon tab. One source tree builds every Revit version from 2023 to 2027, with SAP2000 .s2k samples and a tester package script.",
     versions: ["Revit 2023", "2024", "2025", "2026", "2027"], tech: [".NET 4.8 / 8 / 9", "C#", "SDK csproj"], mb: 2.0, files: 111,
     tools: ["Steel Column & Axis", "build_all.ps1", "package_test.ps1", "RevitCompat ElementId layer"] },
-  { code: "A-01", repo: "sada-arch-toolbox", name: "SADA Arch Toolbox", group: "revit",
-    desc: "Architectural edition of the toolbox: grids, dimensions, overkill cleanup, project browser and revision tools.",
+  { code: "A-02", repo: "sada-arch-toolbox-multiversion", name: "SADA Arch Toolbox", group: "revit",
+    desc: "Complete rebuild of the architectural edition. One source tree builds Revit 2023 to 2027, with its own licence key and ribbon tab.",
+    versions: ["Revit 2023", "2024", "2025", "2026", "2027"], tech: [".NET 4.8 / 8 / 9", "C#", "SDK csproj"], mb: 0.9, files: 86,
+    tools: ["Place Rooms", "Renumber Rooms", "Room Finishes", "Room Data", "Door/Window Marks", "Tag All", "Wall Dims", "Room Dims", "Interior Elevations", "Plan Creator", "Sheet Maker", "Align Viewports", "Batch Rename", "Model Health", "Arch Calculator"] },
+  { code: "A-01", repo: "sada-arch-toolbox", name: "SADA Arch Toolbox 2023 (legacy)", group: "revit",
+    desc: "The first architectural edition, a stripped copy of the Struct toolbox. Replaced by the multi-version rebuild above.",
     versions: ["Revit 2023", "Revit 2024"], tech: [".NET 4.8", "C#"], mb: 52.5, files: 325,
     tools: ["Column & Axis", "Beam & Axis", "Dimension Grids", "Overkill", "Dimension Tracker", "Project Browser Advanced", "Revision Manager", "Schedule Exporter"] },
   { code: "R-01", repo: "sada-batch-exporter", name: "SADA Batch Exporter", group: "revit",

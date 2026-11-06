@@ -166,7 +166,7 @@ footer a { color: var(--blue); }
 
   <div class="notice" role="note">
     <i class="fa-solid fa-key" aria-hidden="true"></i>
-    <span>The Revit add-ins ask for a <b>SADA activation key</b> the first time they start. One key works for the Struct Toolbox, Steel Toolbox and Parapet Tool. If Windows SmartScreen warns about an installer, choose <b>More info &gt; Run anyway</b>.</span>
+    <span>The Revit add-ins ask for a <b>SADA activation key</b> the first time they start. Struct, Steel and Arch are activated separately; the Parapet Tool uses the Struct key. If Windows SmartScreen warns about an installer, choose <b>More info &gt; Run anyway</b>.</span>
   </div>
 
   <main id="store"></main>
@@ -189,10 +189,10 @@ var APPS = [
     desc: "Steel edition: centreline dimensions, piece marks, steel takeoff, member check (AISC 360 / EC3) and SAP2000 export.",
     tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Steel", "Pre-release"], file: "Zip + Install.bat", size: "1.4 MB", version: "1.0.0",
     id: "1YhNZGA9vMR5EkdhstGr-Rb-yN5gWu-iD" },
-  { code: "A-01", name: "SADA Arch Toolbox", group: "revit", icon: "fa-solid fa-building",
-    desc: "Architectural edition: grids, dimensions, overkill cleanup, project browser and revision tools.",
-    tags: ["Revit 2023", "2024"], extra: ["Architecture"], file: "Installer .exe", size: "29.6 MB", version: "1.0",
-    id: "1g9nGeR9VZYw_ueFnIapqzNbZXF3kje0Y" },
+  { code: "A-01", name: "SADA Arch Toolbox", group: "revit", icon: "fa-solid fa-building", badge: "New",
+    desc: "Rebuilt for architects: place and renumber rooms, room finishes, door and window marks, wall and room dimensions, interior elevations, sheets and a model health check.",
+    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Architecture", "Pre-release"], file: "Zip + Install.bat", size: "1.1 MB", version: "1.0.0",
+    id: "1Fdh2PR3akq_zye-Z3XCe1Lv9n0wEBe4V" },
   { code: "R-01", name: "SADA Parapet Tool", group: "revit", icon: "fa-solid fa-border-all", badge: "New",
     desc: "Places parapet posts and beams along the parapet walls of a linked architect model, batch by batch.",
     tags: ["Revit 2023", "2024", "2025"], extra: ["Add-on"], file: "Zip + Install.bat", size: "0.1 MB", version: "1.0",
