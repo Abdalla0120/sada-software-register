@@ -263,7 +263,7 @@ footer { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-
       <p class="tb-lede">Every Revit add-in, analysis tool and helper app, each kept in its own private GitHub repository. Download the full source of any project as a zip, or open it on GitHub.</p>
     </div>
     <div class="tb-cells" aria-label="Register summary">
-      <div class="tb-cell"><span class="tb-label">Projects</span><span class="tb-value" id="stat-projects">14</span></div>
+      <div class="tb-cell"><span class="tb-label">Projects</span><span class="tb-value" id="stat-projects">16</span></div>
       <div class="tb-cell"><span class="tb-label">Visibility</span><span class="tb-value small">Private</span></div>
       <div class="tb-cell"><span class="tb-label">Revit range</span><span class="tb-value small">2023&ndash;2027</span></div>
       <div class="tb-cell"><span class="tb-label">Owner</span><span class="tb-value small">Abdalla0120</span></div>
@@ -290,7 +290,7 @@ footer { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-
 
   <footer>
     <span>SADA Engineering &middot; Source code register</span>
-    <span>Download = latest commit on <b>main</b>, as .zip</span>
+    <span>Download = latest commit on <b>main</b>, as .zip &middot; Ready-to-run setups: <a href="https://abdalla0120.github.io/sada-installers/">sada-installers</a></span>
   </footer>
 </div>
 
@@ -331,6 +331,14 @@ const PROJECTS = [
     desc: "Pick one column and get the whole stack above and below it, with type, height and level filters and a visual stack diagram.",
     versions: ["Revit 2024"], tech: [".NET 4.8", "C#", "WPF"], mb: 0.1, files: 12,
     tools: ["Column Stack", "Junction Offset"] },
+  { code: "R-04", repo: "sada-link-copy", name: "SADA Link Copy", group: "revit",
+    desc: "Copy from Link and Link Builder: rebuilds elements and stairs from linked models. Master copy of the Link Builder code synced into the Struct toolbox.",
+    versions: ["Revit 2023", "2024", "2025"], tech: [".NET 4.8 / 8", "C#"], mb: 0.2, files: 15,
+    tools: ["Copy from Link", "Link Builder", "Stair Rebuilder", "sync_to_struct.ps1"] },
+  { code: "I-01", repo: "sada-installer-scripts", name: "SADA Installer Scripts", group: "analysis",
+    desc: "Inno Setup scripts for the per-user, no-admin installers. Published setups: abdalla0120.github.io/sada-installers.",
+    versions: ["Inno Setup 6.7"], tech: ["Pascal Script", ".iss"], mb: 0.02, files: 8,
+    tools: ["Struct", "Steel", "Arch", "Parapet", "ETABS Toolkit", "Revit auto-detect"] },
   { code: "E-01", repo: "sada-etabs-toolkit", name: "SADA ETABS Toolkit", group: "analysis",
     desc: "Attaches to a running ETABS (v18 to v22+) or edits .s2k files directly: builds slabs from beam bays and fixes beams that look connected but are not.",
     versions: ["ETABS 18–22+", "SAP2000 .s2k"], tech: [".NET 4.8", "C#", "WinForms"], mb: 0.2, files: 17,

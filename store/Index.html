@@ -166,7 +166,7 @@ footer a { color: var(--blue); }
 
   <div class="notice" role="note">
     <i class="fa-solid fa-key" aria-hidden="true"></i>
-    <span>The Revit add-ins ask for a <b>SADA activation key</b> the first time they start. Struct, Steel and Arch are activated separately; the Parapet Tool uses the Struct key. If Windows SmartScreen warns about an installer, choose <b>More info &gt; Run anyway</b>.</span>
+    <span>The Revit add-ins ask for a <b>SADA activation key</b> the first time they start. Struct, Steel and Arch are activated separately; the Parapet Tool uses the Struct key. The setup files install for your Windows account only, so <b>no administrator rights</b> are needed. If Windows SmartScreen warns about an installer, choose <b>More info &gt; Run anyway</b>.</span>
   </div>
 
   <main id="store"></main>
@@ -174,33 +174,34 @@ footer a { color: var(--blue); }
 
   <footer>
     <span>&copy; 2026 SADA Engineering</span>
-    <span>Downloads are served from Google Drive</span>
+    <span>Installers and checksums: <a href="https://abdalla0120.github.io/sada-installers/" target="_blank" rel="noopener">abdalla0120.github.io/sada-installers</a></span>
   </footer>
 </div>
 
 <script>
 var DL = "https://drive.google.com/uc?export=download&id=";
+var REL = "https://github.com/Abdalla0120/sada-installers/releases/latest/download/";
 var APPS = [
-  { code: "S-01", name: "SADA Struct Toolbox", group: "revit", icon: "fa-solid fa-building-columns",
-    desc: "Automatic dimensioning for concrete columns, beams, grids and foundations, plus batch export, revisions and model checks.",
-    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Concrete"], file: "Installer .exe", size: "84.2 MB", version: "Selectable versions",
-    id: "1xX4sOrWXkydRVvqaC8bpv-Kb5RL10BC-" },
-  { code: "S-02", name: "SADA Steel Toolbox", group: "revit", icon: "fa-solid fa-i-cursor", badge: "New",
-    desc: "Steel edition: centreline dimensions, piece marks, steel takeoff, member check (AISC 360 / EC3) and SAP2000 export.",
-    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Steel", "Pre-release"], file: "Zip + Install.bat", size: "1.4 MB", version: "1.0.0",
-    id: "1YhNZGA9vMR5EkdhstGr-Rb-yN5gWu-iD" },
-  { code: "A-01", name: "SADA Arch Toolbox", group: "revit", icon: "fa-solid fa-building", badge: "New",
-    desc: "Rebuilt for architects: place and renumber rooms, room finishes, door and window marks, wall and room dimensions, interior elevations, sheets and a model health check.",
-    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Architecture", "Pre-release"], file: "Zip + Install.bat", size: "1.1 MB", version: "1.0.0",
-    id: "1Fdh2PR3akq_zye-Z3XCe1Lv9n0wEBe4V" },
-  { code: "R-01", name: "SADA Parapet Tool", group: "revit", icon: "fa-solid fa-border-all", badge: "New",
+  { code: "S-01", name: "SADA Struct Toolbox", group: "revit", icon: "fa-solid fa-building-columns", badge: "Updated",
+    desc: "Automatic dimensioning for concrete columns, beams, grids and foundations, drawing spell check, Link Builder, batch export and model checks.",
+    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Concrete", "No admin"], file: "Setup .exe", size: "84.6 MB", version: "2026.11.07",
+    url: REL + "SADA_Struct_Toolbox_Setup.exe" },
+  { code: "S-02", name: "SADA Steel Toolbox", group: "revit", icon: "fa-solid fa-i-cursor", badge: "Updated",
+    desc: "Steel edition: centreline dimensions, piece marks, steel takeoff, member check (AISC 360 / EC3), SAP2000 export and drawing spell check.",
+    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Steel", "No admin"], file: "Setup .exe", size: "2.5 MB", version: "1.0.0",
+    url: REL + "SADA_Steel_Toolbox_Setup.exe" },
+  { code: "A-01", name: "SADA Arch Toolbox", group: "revit", icon: "fa-solid fa-building", badge: "Updated",
+    desc: "Rebuilt for architects: rooms, room finishes, door and window marks, wall and room dimensions, interior elevations, sheets, model health and drawing spell check.",
+    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Architecture", "No admin"], file: "Setup .exe", size: "2.4 MB", version: "1.0.0",
+    url: REL + "SADA_Arch_Toolbox_Setup.exe" },
+  { code: "R-01", name: "SADA Parapet Tool", group: "revit", icon: "fa-solid fa-border-all",
     desc: "Places parapet posts and beams along the parapet walls of a linked architect model, batch by batch.",
-    tags: ["Revit 2023", "2024", "2025"], extra: ["Add-on"], file: "Zip + Install.bat", size: "0.1 MB", version: "1.0",
-    id: "1MlX1_DeUxCvfu_ZP21Hj4pbzf4tIHF83" },
-  { code: "E-01", name: "SADA ETABS Toolkit", group: "analysis", icon: "fa-solid fa-diagram-project", badge: "New",
+    tags: ["Revit 2023", "2024", "2025"], extra: ["Add-on", "No admin"], file: "Setup .exe", size: "2.1 MB", version: "1.0",
+    url: REL + "SADA_Parapet_Tool_Setup.exe" },
+  { code: "E-01", name: "SADA ETABS Toolkit", group: "analysis", icon: "fa-solid fa-diagram-project",
     desc: "Works with a running ETABS or .s2k files: builds slabs from beam bays and fixes beams that look connected but are not.",
-    tags: ["ETABS 18–22+", "SAP2000 .s2k"], extra: ["No install"], file: "Zip (.exe)", size: "0.1 MB", version: "1.0.0",
-    id: "1RbeXaCJxGNKjtj2IPCHvO7VVGlsX15tw" },
+    tags: ["ETABS 18\u201322+", "SAP2000 .s2k"], extra: ["Start menu", "No admin"], file: "Setup .exe", size: "2.1 MB", version: "1.0.0",
+    url: REL + "SADA_ETABS_Toolkit_Setup.exe" },
   { code: "H-01", name: "SADA Struct Helper PC", group: "helper", icon: "fa-solid fa-desktop",
     desc: "Desktop helper app that speeds up your structural workflow on a PC or laptop.",
     tags: ["Windows"], extra: ["PC", "Laptop"], file: "Installer .exe", size: "54.9 MB", version: "1.0.0",
@@ -228,7 +229,7 @@ function card(a) {
     '<div><div class="tags">' + a.tags.map(function (t) { return '<span class="tag v">' + esc(t) + '</span>'; }).join("") +
       a.extra.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join("") + '</div>' +
       '<dl class="spec"><div><dt>Version</dt><dd>' + esc(a.version) + '</dd></div><div><dt>File</dt><dd title="' + esc(a.file) + '">' + esc(a.file) + '</dd></div><div><dt>Size</dt><dd>' + esc(a.size) + '</dd></div></dl></div>' +
-    '<div class="actions"><a class="btn" href="' + DL + a.id + '" target="_blank" rel="noopener"><i class="fa-solid fa-download" aria-hidden="true"></i> Download <small>' + esc(a.size) + '</small></a></div>' +
+    '<div class="actions"><a class="btn" href="' + (a.url || (DL + a.id)) + '" target="_blank" rel="noopener"><i class="fa-solid fa-download" aria-hidden="true"></i> Download <small>' + esc(a.size) + '</small></a></div>' +
   '</article>';
 }
 
