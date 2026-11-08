@@ -2,432 +2,291 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SADA Software Register</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: a drawing sheet. Title block on top, a register of "sheets" (one per app) on drafting grid paper,
-   each card carries a sheet code, a dimension-line rule and the download action. */
+/* Layout: the same product style as the SADA store, tuned for an internal source index.
+   Compact header with totals, a filter bar, then one card per private repository. */
 :root {
-  --paper: #eef2f1;
-  --sheet: #fbfcfc;
-  --ink: #12253a;
-  --muted: #5a6b7c;
-  --line: #c9d4da;
-  --grid: rgba(18, 37, 58, 0.055);
-  --accent: #d9541e;
-  --accent-ink: #ffffff;
-  --accent-soft: rgba(217, 84, 30, 0.10);
-  --blue: #1f5f9e;
-  --blue-soft: rgba(31, 95, 158, 0.09);
-  --shadow: 0 1px 0 rgba(18, 37, 58, 0.04), 0 8px 24px -14px rgba(18, 37, 58, 0.28);
-  --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
-  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --fg: #0e1a2b;
+  --muted: #5a6779;
+  --line: #e1e6ed;
+  --line-strong: #c9d1dc;
+  --accent: #1c57d0;
+  --accent-hover: #1647ad;
+  --accent-fg: #ffffff;
+  --accent-soft: #e9f0fd;
+  --font-sans: "Geist", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Consolas, monospace;
+  --radius: 10px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #0b1826;
-    --sheet: #102235;
-    --ink: #e4edf5;
-    --muted: #93a7ba;
-    --line: #23405c;
-    --grid: rgba(120, 180, 230, 0.07);
-    --accent: #ff7a3d;
-    --accent-ink: #1a0d05;
-    --accent-soft: rgba(255, 122, 61, 0.14);
-    --blue: #7fb8ec;
-    --blue-soft: rgba(127, 184, 236, 0.12);
-    --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 10px 28px -16px rgba(0, 0, 0, 0.7);
-    color-scheme: dark;
+    --bg: #0a111c; --surface: #101a28; --fg: #e5eaf1; --muted: #93a0b2; --line: #1d2a3b; --line-strong: #2b3b50;
+    --accent: #6f9dff; --accent-hover: #8fb3ff; --accent-fg: #07101f; --accent-soft: #15233d; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #0b1826;
-  --sheet: #102235;
-  --ink: #e4edf5;
-  --muted: #93a7ba;
-  --line: #23405c;
-  --grid: rgba(120, 180, 230, 0.07);
-  --accent: #ff7a3d;
-  --accent-ink: #1a0d05;
-  --accent-soft: rgba(255, 122, 61, 0.14);
-  --blue: #7fb8ec;
-  --blue-soft: rgba(127, 184, 236, 0.12);
-  --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 10px 28px -16px rgba(0, 0, 0, 0.7);
-  color-scheme: dark;
+  --bg: #0a111c; --surface: #101a28; --fg: #e5eaf1; --muted: #93a0b2; --line: #1d2a3b; --line-strong: #2b3b50;
+  --accent: #6f9dff; --accent-hover: #8fb3ff; --accent-fg: #07101f; --accent-soft: #15233d; color-scheme: dark;
 }
-
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  background-color: var(--paper);
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.55;
-}
-a { color: inherit; }
-.wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 56px; display: grid; gap: 28px; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 15px; line-height: 1.6; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.container { max-width: 1140px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
 
-/* ---------- Title block ---------- */
-.titleblock {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  border: 2px solid var(--ink);
-  background: var(--sheet);
-  box-shadow: var(--shadow);
-}
-.tb-main { padding: 22px 26px 20px; display: grid; gap: 10px; border-right: 2px solid var(--ink); }
-.tb-kicker { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-h1 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(34px, 5.4vw, 58px);
-  line-height: 0.95;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  text-wrap: balance;
-}
-h1 span { color: var(--accent); }
-.tb-lede { margin: 0; max-width: 62ch; color: var(--muted); }
-.tb-cells { display: grid; grid-template-columns: repeat(2, minmax(110px, 1fr)); }
-.tb-cell { padding: 12px 16px; border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); display: grid; gap: 2px; align-content: start; }
-.tb-cell:nth-child(odd) { border-left: 0; }
-.tb-cell:nth-last-child(-n+2) { border-bottom: 0; }
-.tb-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.tb-value { font-family: var(--font-display); font-weight: 600; font-size: 26px; line-height: 1.05; font-variant-numeric: tabular-nums; }
-.tb-value.small { font-size: 17px; }
+.topbar { background: var(--surface); border-bottom: 1px solid var(--line); }
+.topbar .container { display: flex; align-items: center; gap: 24px; height: 60px; }
+.logo { display: inline-flex; align-items: center; gap: 10px; color: var(--fg); font-weight: 600; font-size: 15.5px; }
+.logo-mark { width: 30px; height: 30px; border-radius: 7px; background: var(--fg); color: var(--surface); display: grid; place-items: center; }
+.logo small { font-weight: 400; color: var(--muted); }
+.topbar nav { margin-left: auto; display: flex; gap: 22px; font-size: 14px; }
+.topbar nav a { color: var(--muted); }
+.topbar nav a:hover { color: var(--fg); text-decoration: none; }
 
-/* ---------- Toolbar ---------- */
-.toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
-.filters { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip {
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  padding: 7px 12px;
-  border: 1px solid var(--line);
-  background: var(--sheet);
-  color: var(--ink);
-  border-radius: 2px;
-  cursor: pointer;
-  display: inline-flex; gap: 8px; align-items: center;
-}
-.chip .n { color: var(--muted); font-variant-numeric: tabular-nums; }
-.chip[aria-pressed="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
-.chip[aria-pressed="true"] .n { color: inherit; opacity: 0.7; }
-.search { position: relative; flex: 0 1 280px; min-width: 200px; }
-.search input {
-  width: 100%;
-  font: 14px var(--font-body);
-  padding: 9px 12px 9px 34px;
-  border: 1px solid var(--line);
-  background: var(--sheet);
-  color: var(--ink);
-  border-radius: 2px;
-}
-.search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.head { padding-block: 44px 28px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 28px; align-items: end; }
+.head h1 { font-size: clamp(30px, 4vw, 42px); font-weight: 650; line-height: 1.1; }
+.head p { margin: 12px 0 0; color: var(--muted); max-width: 60ch; font-size: 16px; }
+.totals { display: flex; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.totals div { padding: 12px 20px; border-left: 1px solid var(--line); display: grid; }
+.totals div:first-child { border-left: 0; }
+.totals span { font-size: 12.5px; color: var(--muted); }
+.totals b { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 
-.notice {
-  display: flex; gap: 12px; align-items: flex-start;
-  padding: 12px 16px;
-  border-left: 3px solid var(--blue);
-  background: var(--blue-soft);
-  font-size: 13.5px;
-  color: var(--ink);
-}
-.notice b { font-weight: 600; }
+.notice { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius); font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.notice svg { color: var(--accent); flex: none; margin-top: 3px; }
+.notice b { color: var(--fg); font-weight: 500; }
 
-/* ---------- Register ---------- */
-.group { display: grid; gap: 14px; }
-.group-head { display: flex; align-items: baseline; gap: 14px; }
-.group-head h2 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 22px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.group-head .rule { flex: 1; height: 1px; background: var(--line); }
-.group-head .count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 20px; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.seg button { font: 500 13.5px var(--font-sans); color: var(--muted); background: transparent; border: 0; padding: 7px 12px; border-radius: 7px; cursor: pointer; }
+.seg button:hover { color: var(--fg); }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--surface); }
+.seg .n { font-family: var(--font-mono); font-size: 11.5px; opacity: 0.7; }
+.search { position: relative; margin-left: auto; flex: 0 1 300px; min-width: 200px; }
+.search input { width: 100%; height: 42px; font: 14px var(--font-sans); padding: 0 12px 0 36px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 10px; }
+.search input::placeholder { color: var(--muted); }
+.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
-
-.card {
-  position: relative;
-  background: var(--sheet);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  min-width: 0;
-  transition: transform 160ms ease, border-color 160ms ease;
-}
-.card:hover { transform: translateY(-2px); border-color: var(--ink); }
-.card-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px dashed var(--line); }
-.code { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; }
-.lock { font-family: var(--font-mono); font-size: 11px; color: var(--muted); display: inline-flex; gap: 5px; align-items: center; }
-.card-body { padding: 14px 16px 4px; display: grid; gap: 8px; }
-.card h3 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 25px;
-  line-height: 1.05;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  text-wrap: balance;
-}
+.group { display: grid; gap: 14px; margin-bottom: 36px; }
+.group h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; display: flex; gap: 10px; align-items: baseline; }
+.group h2 span { font-size: 13px; font-weight: 400; color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; transition: border-color 140ms ease, box-shadow 140ms ease; }
+.card:hover { border-color: var(--line-strong); box-shadow: 0 12px 28px -22px rgba(14, 26, 43, 0.45); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.card h3 { font-size: 16.5px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
+.repo { font-family: var(--font-mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.private { flex: none; display: inline-flex; gap: 5px; align-items: center; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
 .card p { margin: 0; color: var(--muted); font-size: 14px; }
-.repo { font-family: var(--font-mono); font-size: 12px; color: var(--blue); word-break: break-all; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--line); white-space: nowrap; }
+.chip.v { border-color: transparent; background: var(--accent-soft); color: var(--accent); }
+.inside summary { cursor: pointer; font-size: 13px; color: var(--fg); font-weight: 500; list-style: none; display: inline-flex; gap: 6px; align-items: center; }
+.inside summary::-webkit-details-marker { display: none; }
+.inside summary::after { content: "+"; color: var(--muted); }
+.inside[open] summary::after { content: "\2212"; }
+.inside ul { margin: 8px 0 0; padding: 0 0 0 18px; color: var(--muted); font-size: 13px; columns: 2; column-gap: 18px; }
+.foot { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
+.size { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-right: auto; font-variant-numeric: tabular-nums; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 34px; padding: 0 12px; border-radius: 8px; font: 500 13.5px/1 var(--font-sans); border: 1px solid transparent; white-space: nowrap; transition: background-color 120ms ease, border-color 120ms ease; }
+.btn:hover { text-decoration: none; }
+.btn-primary { background: var(--accent); color: var(--accent-fg); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary { background: var(--surface); color: var(--fg); border-color: var(--line-strong); }
+.btn-secondary:hover { border-color: var(--muted); }
+.empty { padding: 40px; text-align: center; color: var(--muted); border: 1px dashed var(--line-strong); border-radius: var(--radius); }
 
-/* dimension line showing size */
-.dim { padding: 10px 16px 4px; display: grid; gap: 4px; }
-.dim-line { position: relative; height: 10px; }
-.dim-line::before { content: ""; position: absolute; left: 0; right: 0; top: 5px; height: 1px; background: var(--muted); opacity: 0.6; }
-.dim-line i { position: absolute; top: 0; width: 1px; height: 10px; background: var(--muted); }
-.dim-line i:first-child { left: 0; }
-.dim-line i:last-child { right: 0; }
-.dim-fill { position: absolute; left: 0; top: 3px; height: 5px; background: var(--accent); opacity: 0.85; }
-.dim-text { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+footer { border-top: 1px solid var(--line); padding-block: 24px 40px; font-size: 13.5px; color: var(--muted); }
+footer .container { display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; }
 
-.tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 16px 0; align-content: start; }
-.tag { font-family: var(--font-mono); font-size: 11px; padding: 3px 7px; border: 1px solid var(--line); color: var(--ink); border-radius: 2px; white-space: nowrap; }
-.tag.v { border-color: transparent; background: var(--blue-soft); color: var(--blue); }
-
-.tools { padding: 10px 16px 0; font-size: 12.5px; color: var(--muted); }
-.tools summary { cursor: pointer; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink); list-style: none; display: inline-flex; gap: 6px; align-items: center; }
-.tools summary::-webkit-details-marker { display: none; }
-.tools summary::before { content: "+"; font-weight: 600; color: var(--accent); width: 10px; }
-.tools[open] summary::before { content: "\2212"; }
-.tools ul { margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 12px; }
-.tools li::before { content: "\25B8 "; color: var(--accent); }
-
-.actions { display: flex; gap: 8px; padding: 16px; margin-top: 8px; border-top: 1px solid var(--line); }
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  font-family: var(--font-display); font-weight: 600; font-size: 17px; letter-spacing: 0.06em; text-transform: uppercase;
-  padding: 9px 14px;
-  border-radius: 2px;
-  text-decoration: none;
-  border: 1.5px solid var(--ink);
-  color: var(--ink);
-  background: transparent;
-  transition: background 140ms ease, color 140ms ease;
+@media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .head { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 680px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .search { margin-left: 0; flex: 1 1 100%; }
+  .totals { width: 100%; }
+  .totals div { flex: 1; padding: 10px 14px; }
+  .topbar nav { display: none; }
 }
-.btn.primary { flex: 1; background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.btn.primary:hover { filter: brightness(1.07); }
-.btn.ghost:hover { background: var(--ink); color: var(--sheet); }
-.btn svg { flex: none; }
-
-.empty { display: none; padding: 28px; text-align: center; color: var(--muted); border: 1px dashed var(--line); background: var(--sheet); font-family: var(--font-mono); font-size: 13px; }
-
-footer { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); border-top: 2px solid var(--ink); padding-top: 12px; }
-
-@media (max-width: 760px) {
-  .titleblock { grid-template-columns: 1fr; }
-  .tb-main { border-right: 0; border-bottom: 2px solid var(--ink); }
-  .grid { grid-template-columns: 1fr; }
-  .search { flex: 1 1 100%; }
-}
-@media (max-width: 420px) {
-  .wrap { padding: 20px 16px 40px; }
-  .actions { flex-direction: column; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .card, .btn { transition: none; }
-  .card:hover { transform: none; }
-}
+@media (max-width: 460px) { .container { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } .inside ul { columns: 1; } }
+@media (prefers-reduced-motion: reduce) { .card, .btn { transition: none; } }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header class="titleblock">
-    <div class="tb-main">
-      <div class="tb-kicker">SADA Engineering &middot; Source code register</div>
-      <h1>SADA <span>Software</span> Register</h1>
-      <p class="tb-lede">Every Revit add-in, analysis tool and helper app, each kept in its own private GitHub repository. Download the full source of any project as a zip, or open it on GitHub.</p>
-    </div>
-    <div class="tb-cells" aria-label="Register summary">
-      <div class="tb-cell"><span class="tb-label">Projects</span><span class="tb-value" id="stat-projects">16</span></div>
-      <div class="tb-cell"><span class="tb-label">Visibility</span><span class="tb-value small">Private</span></div>
-      <div class="tb-cell"><span class="tb-label">Revit range</span><span class="tb-value small">2023&ndash;2027</span></div>
-      <div class="tb-cell"><span class="tb-label">Owner</span><span class="tb-value small">Abdalla0120</span></div>
-      <div class="tb-cell"><span class="tb-label">Source size</span><span class="tb-value small" id="stat-size">&ndash;</span></div>
-      <div class="tb-cell"><span class="tb-label">Issued</span><span class="tb-value small">06 Nov 2026</span></div>
-    </div>
-  </header>
+<header class="topbar">
+  <div class="container">
+    <span class="logo">
+      <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h16M4 20h16M7 4v16M17 4v16M4 12h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span>
+      <span>SADA Engineering <small>Source register</small></span>
+    </span>
+    <nav aria-label="Other SADA pages">
+      <a href="https://abdalla0120.github.io/sada-installers/">Installers</a>
+      <a href="https://github.com/Abdalla0120?tab=repositories">GitHub</a>
+    </nav>
+  </div>
+</header>
 
-  <div class="toolbar">
-    <div class="filters" role="group" aria-label="Filter by category" id="filters"></div>
-    <label class="search" for="q">
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5.2" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      <input id="q" type="search" placeholder="Search apps, tools, Revit years" aria-label="Search projects" autocomplete="off">
-    </label>
+<main class="container">
+  <div class="head">
+    <div>
+      <h1>Software register</h1>
+      <p>Every SADA add-in, analysis tool and helper app, each in its own private GitHub repository. Download the source of any project as a zip, or open it on GitHub.</p>
+    </div>
+    <div class="totals" aria-label="Register totals">
+      <div><span>Projects</span><b id="stat-projects">16</b></div>
+      <div><span>Source</span><b id="stat-size">&ndash;</b></div>
+      <div><span>Revit</span><b>2023&ndash;27</b></div>
+    </div>
   </div>
 
   <div class="notice" role="note">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="flex:none;margin-top:2px;color:var(--blue)"><rect x="3" y="7" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.5"/></svg>
-    <span>These repositories are <b>private</b>. Download buttons work while you are signed in to GitHub as <b>Abdalla0120</b>. Anyone else gets a "404" from GitHub, so sharing this page does not share the code.</span>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.5"/></svg>
+    <span>These repositories are <b>private</b>. The download buttons work only while you are signed in to GitHub as <b>Abdalla0120</b>. Anyone else gets a 404 page, so sharing this page does not share the code.</span>
   </div>
 
-  <main id="register"></main>
-  <div class="empty" id="empty">No project matches that search.</div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Filter by category" id="filters"></div>
+    <label class="search" for="q">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input id="q" type="search" placeholder="Search projects, tools or Revit years" aria-label="Search projects" autocomplete="off">
+    </label>
+  </div>
 
-  <footer>
-    <span>SADA Engineering &middot; Source code register</span>
-    <span>Download = latest commit on <b>main</b>, as .zip &middot; Ready-to-run setups: <a href="https://abdalla0120.github.io/sada-installers/">sada-installers</a></span>
-  </footer>
-</div>
+  <div id="register"></div>
+  <div class="empty" id="empty" hidden>No project matches that search.</div>
+</main>
+
+<footer>
+  <div class="container">
+    <span>&copy; 2026 SADA Engineering</span>
+    <span>Download gives the latest commit on <b>main</b> as a .zip &middot; Ready-to-run setups: <a href="https://abdalla0120.github.io/sada-installers/">SADA Installers</a></span>
+  </div>
+</footer>
 
 <script>
 const OWNER = "Abdalla0120";
 const PROJECTS = [
-  { code: "S-01", repo: "sada-struct-toolbox-2023", name: "SADA Struct Toolbox 2023", group: "revit",
+  { repo: "sada-struct-toolbox-2023", name: "SADA Struct Toolbox 2023", group: "revit",
     desc: "The concrete toolbox: automatic dimensioning of columns, beams, grids and foundations, plus batch export, revision and model-checking tools.",
     versions: ["Revit 2023", "Revit 2024"], tech: [".NET 4.8", "C#", "WPF"], mb: 53.1, files: 358,
     tools: ["Column & Axis", "Smart Column & Axis", "Column Stack", "Beam & Axis", "T.O.B & Spans", "Drop Panels", "Parapet Posts & Beams", "Isolated Footings", "Rafts & Combined", "Dimension Grids", "Overkill", "Tag Linked Elements", "Batch Exporter 2.0", "Revision Manager", "AI Smart Arranger", "Engineering Calculator", "Schedule Exporter", "Analytical Model Checker"] },
-  { code: "S-02", repo: "sada-struct-toolbox-2025", name: "SADA Struct Toolbox 2025", group: "revit",
+  { repo: "sada-struct-toolbox-2025", name: "SADA Struct Toolbox 2025", group: "revit",
     desc: "The same Struct Toolbox ported to the .NET 8 Revit API with 64-bit ElementIds.",
     versions: ["Revit 2025", "Revit 2026"], tech: [".NET 8", "C#", "WPF"], mb: 51.6, files: 166 },
-  { code: "S-03", repo: "sada-struct-toolbox-2027", name: "SADA Struct Toolbox 2027", group: "revit",
+  { repo: "sada-struct-toolbox-2027", name: "SADA Struct Toolbox 2027", group: "revit",
     desc: "Struct Toolbox build for Revit 2027 on .NET 9.",
     versions: ["Revit 2027"], tech: [".NET 9", "C#", "WPF"], mb: 51.6, files: 167 },
-  { code: "S-04", repo: "sada-steel-toolbox", name: "SADA Steel Toolbox", group: "revit",
+  { repo: "sada-steel-toolbox", name: "SADA Steel Toolbox", group: "revit",
     desc: "Steel edition with its own ribbon tab. One source tree builds every Revit version from 2023 to 2027, with SAP2000 .s2k samples and a tester package script.",
-    versions: ["Revit 2023", "2024", "2025", "2026", "2027"], tech: [".NET 4.8 / 8 / 9", "C#", "SDK csproj"], mb: 2.0, files: 111,
+    versions: ["Revit 2023 to 2027"], tech: [".NET 4.8 / 8 / 9", "C#", "SDK csproj"], mb: 2.0, files: 111,
     tools: ["Steel Column & Axis", "build_all.ps1", "package_test.ps1", "RevitCompat ElementId layer"] },
-  { code: "A-02", repo: "sada-arch-toolbox-multiversion", name: "SADA Arch Toolbox", group: "revit",
+  { repo: "sada-arch-toolbox-multiversion", name: "SADA Arch Toolbox", group: "revit",
     desc: "Complete rebuild of the architectural edition. One source tree builds Revit 2023 to 2027, with its own licence key and ribbon tab.",
-    versions: ["Revit 2023", "2024", "2025", "2026", "2027"], tech: [".NET 4.8 / 8 / 9", "C#", "SDK csproj"], mb: 0.9, files: 86,
+    versions: ["Revit 2023 to 2027"], tech: [".NET 4.8 / 8 / 9", "C#", "SDK csproj"], mb: 0.9, files: 86,
     tools: ["Place Rooms", "Renumber Rooms", "Room Finishes", "Room Data", "Door/Window Marks", "Tag All", "Wall Dims", "Room Dims", "Interior Elevations", "Plan Creator", "Sheet Maker", "Align Viewports", "Batch Rename", "Model Health", "Arch Calculator"] },
-  { code: "A-01", repo: "sada-arch-toolbox", name: "SADA Arch Toolbox 2023 (legacy)", group: "revit",
-    desc: "The first architectural edition, a stripped copy of the Struct toolbox. Replaced by the multi-version rebuild above.",
+  { repo: "sada-arch-toolbox", name: "SADA Arch Toolbox 2023 (legacy)", group: "revit",
+    desc: "The first architectural edition, a stripped copy of the Struct toolbox. Replaced by the multi-version rebuild.",
     versions: ["Revit 2023", "Revit 2024"], tech: [".NET 4.8", "C#"], mb: 52.5, files: 325,
     tools: ["Column & Axis", "Beam & Axis", "Dimension Grids", "Overkill", "Dimension Tracker", "Project Browser Advanced", "Revision Manager", "Schedule Exporter"] },
-  { code: "R-01", repo: "sada-batch-exporter", name: "SADA Batch Exporter", group: "revit",
+  { repo: "sada-batch-exporter", name: "SADA Batch Exporter", group: "revit",
     desc: "Standalone batch exporter for sheets and views, with both the classic and the 2.0 export dialogs.",
     versions: ["Revit 2023", "Revit 2024"], tech: [".NET 4.8", "C#"], mb: 51.0, files: 177,
     tools: ["Batch Export 1.0", "Batch Exporter 2.0"] },
-  { code: "R-02", repo: "sada-parapet-tool", name: "SADA Parapet Tool", group: "revit",
+  { repo: "sada-parapet-tool", name: "SADA Parapet Tool", group: "revit",
     desc: "Plans and places parapet posts and beams along roof edges, with its own licence check.",
-    versions: ["Revit 2023+"], tech: [".NET 4.8", "C#", "Obfuscar"], mb: 0.2, files: 15,
-    tools: ["Parapet Posts & Beams"] },
-  { code: "R-03", repo: "multilevel-column-selector", name: "Multi-Level Column Selector", group: "revit",
+    versions: ["Revit 2023+"], tech: [".NET 4.8", "C#", "Obfuscar"], mb: 0.2, files: 15 },
+  { repo: "multilevel-column-selector", name: "Multi-Level Column Selector", group: "revit",
     desc: "Pick one column and get the whole stack above and below it, with type, height and level filters and a visual stack diagram.",
-    versions: ["Revit 2024"], tech: [".NET 4.8", "C#", "WPF"], mb: 0.1, files: 12,
-    tools: ["Column Stack", "Junction Offset"] },
-  { code: "R-04", repo: "sada-link-copy", name: "SADA Link Copy", group: "revit",
+    versions: ["Revit 2024"], tech: [".NET 4.8", "C#", "WPF"], mb: 0.1, files: 12 },
+  { repo: "sada-link-copy", name: "SADA Link Copy", group: "revit",
     desc: "Copy from Link and Link Builder: rebuilds elements and stairs from linked models. Master copy of the Link Builder code synced into the Struct toolbox.",
-    versions: ["Revit 2023", "2024", "2025"], tech: [".NET 4.8 / 8", "C#"], mb: 0.2, files: 15,
+    versions: ["Revit 2023 to 2025"], tech: [".NET 4.8 / 8", "C#"], mb: 0.2, files: 15,
     tools: ["Copy from Link", "Link Builder", "Stair Rebuilder", "sync_to_struct.ps1"] },
-  { code: "I-01", repo: "sada-installer-scripts", name: "SADA Installer Scripts", group: "analysis",
-    desc: "Inno Setup scripts for the per-user, no-admin installers. Published setups: abdalla0120.github.io/sada-installers.",
+  { repo: "sada-installer-scripts", name: "SADA Installer Scripts", group: "analysis",
+    desc: "Inno Setup scripts for the per-user, no-admin installers published on the SADA Installers site.",
     versions: ["Inno Setup 6.7"], tech: ["Pascal Script", ".iss"], mb: 0.02, files: 8,
     tools: ["Struct", "Steel", "Arch", "Parapet", "ETABS Toolkit", "Revit auto-detect"] },
-  { code: "E-01", repo: "sada-etabs-toolkit", name: "SADA ETABS Toolkit", group: "analysis",
+  { repo: "sada-etabs-toolkit", name: "SADA ETABS Toolkit", group: "analysis",
     desc: "Attaches to a running ETABS (v18 to v22+) or edits .s2k files directly: builds slabs from beam bays and fixes beams that look connected but are not.",
-    versions: ["ETABS 18–22+", "SAP2000 .s2k"], tech: [".NET 4.8", "C#", "WinForms"], mb: 0.2, files: 17,
-    tools: ["Shells from beam intersections", "Beam connectivity", "Log explainer", "Self test"] },
-  { code: "N-01", repo: "navis-clash-generator", name: "Navis Clash Generator", group: "analysis",
+    versions: ["ETABS 18 to 22+", "SAP2000 .s2k"], tech: [".NET 4.8", "C#", "WinForms"], mb: 0.2, files: 17 },
+  { repo: "navis-clash-generator", name: "Navis Clash Generator", group: "analysis",
     desc: "Generates Navisworks clash tests from a simple form.",
     versions: ["Navisworks"], tech: ["VB.NET", "WinForms"], mb: 0.02, files: 5 },
-  { code: "H-01", repo: "sada-struct-helper-android", name: "SADA Struct Helper", group: "helper",
+  { repo: "sada-struct-helper-android", name: "SADA Struct Helper", group: "helper",
     desc: "Android companion app for structural engineers, written in Kotlin.",
     versions: ["Android"], tech: ["Kotlin", "Gradle"], mb: 0.8, files: 68 },
-  { code: "H-02", repo: "sada-struct-helper-pc", name: "SADA Struct Helper PC", group: "helper",
+  { repo: "sada-struct-helper-pc", name: "SADA Struct Helper PC", group: "helper",
     desc: "Desktop build of the Struct Helper (first version).",
     versions: ["Windows"], tech: ["Kotlin", "Gradle"], mb: 0.3, files: 36 },
-  { code: "H-03", repo: "sada-struct-helper-pc2", name: "SADA Struct Helper PC 2", group: "helper",
+  { repo: "sada-struct-helper-pc2", name: "SADA Struct Helper PC 2", group: "helper",
     desc: "Desktop build of the Struct Helper (second, newer version).",
     versions: ["Windows"], tech: ["Kotlin", "Gradle"], mb: 0.3, files: 36 },
 ];
 const GROUPS = [
   { id: "revit", label: "Revit add-ins" },
-  { id: "analysis", label: "Analysis & coordination" },
+  { id: "analysis", label: "Analysis & tooling" },
   { id: "helper", label: "Helper apps" },
 ];
-
-const ICON_DL = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0l-3.2-3.2M8 10l3.2-3.2M2.5 13.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-const ICON_GH = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>';
-const ICON_LOCK = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.8"/></svg>';
-
+const ICON_DL = '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5v7.5m0 0L5 7m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_LOCK = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.8"/></svg>';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const maxMb = Math.max(...PROJECTS.map(p => p.mb));
 const fmtMb = mb => mb < 1 ? Math.max(1, Math.round(mb * 1024)) + " KB" : mb.toFixed(1) + " MB";
 
 function card(p) {
   const url = `https://github.com/${OWNER}/${p.repo}`;
   const zip = `${url}/archive/refs/heads/main.zip`;
-  const pct = Math.max(2, Math.sqrt(p.mb / maxMb) * 100);
-  const tools = p.tools ? `<details class="tools"><summary>${p.tools.length} tools inside</summary><ul>${p.tools.map(t => `<li>${esc(t)}</li>`).join("")}</ul></details>` : "";
-  return `<article class="card" data-search="${esc([p.name, p.repo, p.desc, ...p.versions, ...p.tech, ...(p.tools || [])].join(" ").toLowerCase())}">
-    <div class="card-top"><span class="code">${p.code}</span><span class="lock">${ICON_LOCK} private</span></div>
-    <div class="card-body">
-      <h3>${esc(p.name)}</h3>
-      <p>${esc(p.desc)}</p>
-      <span class="repo">${OWNER}/${p.repo}</span>
-    </div>
-    <div>
-      <div class="tags">${p.versions.map(v => `<span class="tag v">${esc(v)}</span>`).join("")}${p.tech.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
-      ${tools}
-      <div class="dim" aria-label="Source size ${fmtMb(p.mb)}, ${p.files} files">
-        <div class="dim-line"><i></i><span class="dim-fill" style="width:${pct.toFixed(1)}%"></span><i></i></div>
-        <div class="dim-text"><span>${p.files} files</span><span>${fmtMb(p.mb)}</span></div>
-      </div>
-    </div>
-    <div class="actions">
-      <a class="btn primary" href="${zip}" target="_blank" rel="noopener">${ICON_DL} Download .zip</a>
-      <a class="btn ghost" href="${url}" target="_blank" rel="noopener" aria-label="Open ${esc(p.name)} on GitHub">${ICON_GH} GitHub</a>
+  const inside = p.tools ? `<details class="inside"><summary>${p.tools.length} tools inside</summary><ul>${p.tools.map(t => `<li>${esc(t)}</li>`).join("")}</ul></details>` : "";
+  const search = [p.name, p.repo, p.desc, ...p.versions, ...p.tech, ...(p.tools || [])].join(" ").toLowerCase();
+  return `<article class="card" data-search="${esc(search)}">
+    <div class="card-top"><div><h3>${esc(p.name)}</h3><div class="repo">${p.repo}</div></div><span class="private">${ICON_LOCK} Private</span></div>
+    <p>${esc(p.desc)}</p>
+    <div class="chips">${p.versions.map(v => `<span class="chip v">${esc(v)}</span>`).join("")}${p.tech.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div>
+    ${inside}
+    <div class="foot">
+      <span class="size">${p.files} files &middot; ${fmtMb(p.mb)}</span>
+      <a class="btn btn-secondary" href="${url}" target="_blank" rel="noopener" aria-label="Open ${esc(p.name)} on GitHub">GitHub</a>
+      <a class="btn btn-primary" href="${zip}" target="_blank" rel="noopener" aria-label="Download ${esc(p.name)} source as zip">${ICON_DL} Zip</a>
     </div>
   </article>`;
 }
 
 let active = "all";
 try { active = localStorage.getItem("sada-filter") || "all"; } catch (e) {}
+if (active !== "all" && !GROUPS.some(g => g.id === active)) active = "all";
 
 function renderFilters() {
   const opts = [{ id: "all", label: "All" }, ...GROUPS];
   document.getElementById("filters").innerHTML = opts.map(o => {
     const n = o.id === "all" ? PROJECTS.length : PROJECTS.filter(p => p.group === o.id).length;
-    return `<button class="chip" type="button" data-f="${o.id}" aria-pressed="${o.id === active}">${o.label}<span class="n">${n}</span></button>`;
+    return `<button type="button" data-f="${o.id}" aria-pressed="${o.id === active}">${o.label} <span class="n">${n}</span></button>`;
   }).join("");
 }
-
 function render() {
   const q = document.getElementById("q").value.trim().toLowerCase();
   let shown = 0;
   document.getElementById("register").innerHTML = GROUPS.filter(g => active === "all" || g.id === active).map(g => {
     const items = PROJECTS.filter(p => p.group === g.id);
-    return `<section class="group" data-g="${g.id}">
-      <div class="group-head"><h2>${g.label}</h2><span class="rule"></span><span class="count">${items.length} projects</span></div>
-      <div class="grid">${items.map(card).join("")}</div></section>`;
+    return `<section class="group"><h2>${g.label} <span>${items.length}</span></h2><div class="grid">${items.map(card).join("")}</div></section>`;
   }).join("");
   document.querySelectorAll("#register .group").forEach(sec => {
     let vis = 0;
-    sec.querySelectorAll(".card").forEach(c => {
-      const ok = !q || c.dataset.search.includes(q);
-      c.hidden = !ok; if (ok) vis++;
-    });
+    sec.querySelectorAll(".card").forEach(c => { const ok = !q || c.dataset.search.includes(q); c.hidden = !ok; if (ok) vis++; });
     sec.hidden = vis === 0; shown += vis;
   });
-  document.getElementById("empty").style.display = shown ? "none" : "block";
+  document.getElementById("empty").hidden = shown !== 0;
 }
-
 document.getElementById("filters").addEventListener("click", e => {
   const b = e.target.closest("[data-f]"); if (!b) return;
   active = b.dataset.f;
@@ -435,10 +294,8 @@ document.getElementById("filters").addEventListener("click", e => {
   renderFilters(); render();
 });
 document.getElementById("q").addEventListener("input", render);
-
-const totalMb = PROJECTS.reduce((s, p) => s + p.mb, 0);
 document.getElementById("stat-projects").textContent = PROJECTS.length;
-document.getElementById("stat-size").textContent = totalMb.toFixed(0) + " MB";
+document.getElementById("stat-size").textContent = PROJECTS.reduce((s, p) => s + p.mb, 0).toFixed(0) + " MB";
 renderFilters(); render();
 </script>
 </body>

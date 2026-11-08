@@ -1,266 +1,501 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
 <base target="_top">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SADA App Store</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Windows installers for the SADA Revit add-ins, ETABS toolkit and helper apps. No administrator rights needed.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: an engineering drawing sheet. Title block header, drafting-grid paper,
-   each app is a numbered "sheet" with its spec table and one clear download action. */
+/* Layout: software-vendor page. Top bar, hero with a product preview (a plan view the Struct
+   toolbox has dimensioned), then the tool catalogue, the install sequence and an FAQ. */
 :root {
-  --paper: #eef2f1;
-  --sheet: #fbfcfc;
-  --ink: #12253a;
-  --muted: #5a6b7c;
-  --line: #c9d4da;
-  --grid: rgba(18, 37, 58, 0.055);
-  --accent: #d9541e;
-  --accent-ink: #ffffff;
-  --blue: #1f5f9e;
-  --blue-soft: rgba(31, 95, 158, 0.09);
-  --new: #2f8a4f;
-  --shadow: 0 1px 0 rgba(18, 37, 58, 0.04), 0 10px 26px -16px rgba(18, 37, 58, 0.35);
-  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
-  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", Consolas, monospace;
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --fg: #0e1a2b;
+  --muted: #5a6779;
+  --line: #e1e6ed;
+  --line-strong: #c9d1dc;
+  --accent: #1c57d0;
+  --accent-hover: #1647ad;
+  --accent-fg: #ffffff;
+  --accent-soft: #e9f0fd;
+  --ok: #17804c;
+  --ok-soft: #e6f4ec;
+  --plan-grid: #9aa7b8;
+  --font-sans: "Geist", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Consolas, monospace;
+  --radius: 10px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0b1826;
-    --sheet: #102235;
-    --ink: #e4edf5;
-    --muted: #93a7ba;
-    --line: #23405c;
-    --grid: rgba(120, 180, 230, 0.07);
-    --accent: #ff7a3d;
-    --accent-ink: #1a0d05;
-    --blue: #7fb8ec;
-    --blue-soft: rgba(127, 184, 236, 0.12);
-    --new: #5fd08a;
-    --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 12px 30px -16px rgba(0, 0, 0, 0.75);
-    color-scheme: dark;
+  :root:not([data-theme="light"]) {
+    --bg: #0a111c; --surface: #101a28; --fg: #e5eaf1; --muted: #93a0b2; --line: #1d2a3b; --line-strong: #2b3b50;
+    --accent: #6f9dff; --accent-hover: #8fb3ff; --accent-fg: #07101f; --accent-soft: #15233d;
+    --ok: #5ccb8f; --ok-soft: #12291f; --plan-grid: #4c5c72; color-scheme: dark;
   }
 }
+:root[data-theme="dark"] {
+  --bg: #0a111c; --surface: #101a28; --fg: #e5eaf1; --muted: #93a0b2; --line: #1d2a3b; --line-strong: #2b3b50;
+  --accent: #6f9dff; --accent-hover: #8fb3ff; --accent-fg: #07101f; --accent-soft: #15233d;
+  --ok: #5ccb8f; --ok-soft: #12291f; --plan-grid: #4c5c72; color-scheme: dark;
+}
 * { box-sizing: border-box; }
-body {
-  margin: 0;
-  background-color: var(--paper);
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.55;
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 15px; line-height: 1.6; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.container { max-width: 1140px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+
+/* top bar */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: saturate(160%) blur(10px); -webkit-backdrop-filter: saturate(160%) blur(10px); border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+.topbar .container { display: flex; align-items: center; gap: 24px; height: 60px; }
+.logo { display: inline-flex; align-items: center; gap: 10px; color: var(--fg); font-weight: 600; font-size: 15.5px; letter-spacing: -0.01em; }
+.logo:hover { text-decoration: none; }
+.logo-mark { width: 30px; height: 30px; border-radius: 7px; background: var(--fg); color: var(--surface); display: grid; place-items: center; }
+.logo small { font-weight: 400; color: var(--muted); }
+.nav { display: flex; gap: 22px; margin-left: auto; font-size: 14px; }
+.nav a { color: var(--muted); }
+.nav a:hover { color: var(--fg); text-decoration: none; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 8px; font: 500 14px/1 var(--font-sans); border: 1px solid transparent; cursor: pointer; white-space: nowrap; transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease; }
+.btn:hover { text-decoration: none; }
+.btn-primary { background: var(--accent); color: var(--accent-fg); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary { background: var(--surface); color: var(--fg); border-color: var(--line-strong); }
+.btn-secondary:hover { border-color: var(--muted); }
+.btn-quiet { background: transparent; color: var(--muted); padding: 0 10px; }
+.btn-quiet:hover { color: var(--fg); background: var(--bg); }
+.btn .size { font-family: var(--font-mono); font-size: 12px; font-weight: 400; opacity: 0.8; }
+.btn svg { flex: none; }
+
+/* hero */
+.hero { padding-block: 64px 56px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 56px; align-items: center; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; }
+.hero h1 { margin-top: 18px; font-size: clamp(34px, 4.6vw, 52px); line-height: 1.06; font-weight: 650; }
+.hero .lede { margin: 18px 0 0; font-size: 17px; color: var(--muted); max-width: 52ch; }
+.hero-actions { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-actions .btn { height: 44px; padding: 0 20px; font-size: 15px; }
+.facts { margin: 32px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: 14px; color: var(--muted); }
+.facts li { display: inline-flex; align-items: center; gap: 8px; }
+.facts svg { color: var(--ok); flex: none; }
+
+/* product preview */
+.preview { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 2px rgba(14, 26, 43, 0.04), 0 24px 48px -28px rgba(14, 26, 43, 0.35); overflow: hidden; min-width: 0; }
+.pv-bar { display: flex; justify-content: space-between; gap: 12px; padding: 9px 14px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); background: var(--bg); }
+.pv-bar b { color: var(--fg); font-weight: 500; }
+.pv-tabs { display: flex; gap: 2px; padding: 6px 10px 0; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; }
+.pv-tabs span { padding: 5px 10px 7px; }
+.pv-tabs .on { color: var(--accent); font-weight: 500; box-shadow: inset 0 -2px 0 var(--accent); }
+.pv-ribbon { display: flex; border-bottom: 1px solid var(--line); overflow: hidden; }
+.pv-panel { padding: 10px 12px 6px; border-right: 1px solid var(--line); display: grid; gap: 6px; flex: none; }
+.pv-panel:last-child { border-right: 0; }
+.pv-btns { display: flex; gap: 4px; }
+.pv-btn { width: 62px; display: grid; justify-items: center; gap: 4px; font-size: 10.5px; line-height: 1.2; text-align: center; color: var(--fg); padding: 4px 2px; border-radius: 6px; }
+.pv-btn.on { background: var(--accent-soft); }
+.pv-btn i { width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; color: var(--accent); background: var(--accent-soft); }
+.pv-btn.on i { background: var(--accent); color: var(--accent-fg); }
+.pv-name { font-size: 10px; color: var(--muted); text-align: center; letter-spacing: 0.04em; text-transform: uppercase; }
+.pv-plan { display: block; width: 100%; height: auto; }
+.pv-plan .g { stroke: var(--plan-grid); stroke-width: 1; stroke-dasharray: 10 4 2 4; }
+.pv-plan .bubble { fill: var(--surface); stroke: var(--plan-grid); }
+.pv-plan .bt { fill: var(--muted); font: 500 11px var(--font-sans); text-anchor: middle; dominant-baseline: central; }
+.pv-plan .beam { stroke: var(--fg); stroke-opacity: 0.28; stroke-width: 3; }
+.pv-plan .col { fill: var(--fg); }
+.pv-plan .dim { stroke: var(--accent); stroke-width: 1; }
+.pv-plan .tick { stroke: var(--accent); stroke-width: 1.4; }
+.pv-plan .dt { fill: var(--accent); font: 500 10.5px var(--font-mono); text-anchor: middle; }
+.pv-status { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+.pv-status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); flex: none; }
+
+/* sections */
+section { scroll-margin-top: 80px; }
+.band { padding-block: 64px; border-top: 1px solid var(--line); }
+.band-alt { background: var(--surface); }
+.section-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px; margin-bottom: 28px; }
+.section-head h2 { font-size: 30px; font-weight: 650; line-height: 1.15; }
+.section-head p { margin: 8px 0 0; color: var(--muted); max-width: 60ch; }
+
+/* catalogue controls */
+.controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 20px; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.seg button { font: 500 13.5px var(--font-sans); color: var(--muted); background: transparent; border: 0; padding: 7px 12px; border-radius: 7px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.seg button:hover { color: var(--fg); }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--surface); }
+.seg .n { font-family: var(--font-mono); font-size: 11.5px; opacity: 0.7; }
+.search { position: relative; margin-left: auto; flex: 0 1 280px; min-width: 200px; }
+.search input { width: 100%; height: 42px; font: 14px var(--font-sans); padding: 0 12px 0 36px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 10px; }
+.search input::placeholder { color: var(--muted); }
+.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+
+/* tool cards */
+.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.tool { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0; transition: border-color 140ms ease, box-shadow 140ms ease; }
+.tool:hover { border-color: var(--line-strong); box-shadow: 0 12px 28px -22px rgba(14, 26, 43, 0.45); }
+.tool-head { display: flex; gap: 14px; align-items: flex-start; }
+.ico { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; flex: none; background: var(--accent-soft); color: var(--accent); }
+.tool-id { flex: 1; min-width: 0; }
+.tool h3 { font-size: 18px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
+.kind { font-size: 13px; color: var(--muted); }
+.badge { flex: none; font-size: 12px; font-weight: 500; padding: 2px 9px; border-radius: 999px; color: var(--ok); background: var(--ok-soft); }
+.badge.updated { color: var(--accent); background: var(--accent-soft); }
+.desc { margin: 0; color: var(--muted); font-size: 14.5px; }
+.compat { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12.5px; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--line); color: var(--fg); white-space: nowrap; }
+.tool-foot { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding-top: 4px; }
+.tool-foot .btn-primary { flex: 1 1 auto; }
+.meta { margin: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; font-size: 13px; }
+.meta div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; padding: 8px 12px; border-top: 1px solid var(--line); }
+.meta div:first-child { border-top: 0; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; font-family: var(--font-mono); font-size: 12px; overflow-wrap: anywhere; min-width: 0; }
+.hash { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
+.hash code { min-width: 0; overflow-wrap: anywhere; }
+.copy { flex: none; font: 500 12px var(--font-sans); padding: 2px 8px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--fg); border-radius: 6px; cursor: pointer; }
+.copy:hover { border-color: var(--muted); }
+.empty { padding: 40px; text-align: center; color: var(--muted); border: 1px dashed var(--line-strong); border-radius: var(--radius); }
+
+/* steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; counter-reset: step; }
+.steps li { counter-increment: step; display: grid; gap: 8px; align-content: start; }
+.steps li::before { content: counter(step); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font: 600 14px var(--font-sans); color: var(--accent); background: var(--accent-soft); }
+.steps h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+.steps p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+/* faq */
+.faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; }
+.faq details { border-bottom: 1px solid var(--line); padding: 4px 0; }
+.faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; font-weight: 500; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; color: var(--muted); font-size: 20px; line-height: 1; }
+.faq details[open] summary::after { content: "\2212"; }
+.faq p { margin: 0 0 16px; color: var(--muted); font-size: 14.5px; max-width: 62ch; }
+code { font-family: var(--font-mono); font-size: 0.88em; }
+.faq code { background: var(--bg); border: 1px solid var(--line); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; color: var(--fg); }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 40px; font-size: 13.5px; color: var(--muted); }
+footer .container { display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; }
+footer nav { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+footer a { color: var(--muted); }
+footer a:hover { color: var(--fg); }
+
+@media (max-width: 960px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 44px 44px; }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 56px; display: grid; gap: 26px; }
-
-/* Title block */
-.titleblock { display: grid; grid-template-columns: 1fr auto; border: 2px solid var(--ink); background: var(--sheet); box-shadow: var(--shadow); }
-.tb-main { padding: 24px 28px 22px; display: grid; gap: 10px; border-right: 2px solid var(--ink); }
-.brand { display: flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.brand-mark { width: 30px; height: 30px; display: grid; place-items: center; background: var(--ink); color: var(--sheet); font-family: var(--font-display); font-weight: 700; font-size: 18px; }
-h1 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(38px, 6vw, 64px); line-height: 0.95; text-transform: uppercase; text-wrap: balance; }
-h1 span { color: var(--accent); }
-.lede { margin: 0; max-width: 60ch; color: var(--muted); }
-.tb-cells { display: grid; grid-template-columns: repeat(2, minmax(120px, 1fr)); }
-.tb-cell { padding: 12px 16px; border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; gap: 2px; align-content: start; }
-.tb-cell:nth-child(odd) { border-left: 0; }
-.tb-cell:nth-last-child(-n+2) { border-bottom: 0; }
-.tb-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.tb-value { font-family: var(--font-display); font-weight: 600; font-size: 26px; line-height: 1.05; font-variant-numeric: tabular-nums; }
-.tb-value.sm { font-size: 17px; }
-
-/* Toolbar */
-.toolbar { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
-.filters { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { font-family: var(--font-mono); font-size: 12.5px; padding: 7px 12px; border: 1px solid var(--line); background: var(--sheet); color: var(--ink); border-radius: 2px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
-.chip .n { color: var(--muted); }
-.chip[aria-pressed="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
-.chip[aria-pressed="true"] .n { color: inherit; opacity: 0.7; }
-.search { position: relative; flex: 0 1 280px; min-width: 200px; }
-.search input { width: 100%; font: 14px var(--font-body); padding: 9px 12px 9px 34px; border: 1px solid var(--line); background: var(--sheet); color: var(--ink); border-radius: 2px; }
-.search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 13px; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-.notice { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-left: 3px solid var(--blue); background: var(--blue-soft); font-size: 13.5px; }
-.notice i { color: var(--blue); margin-top: 3px; }
-
-/* Groups and cards */
-.group { display: grid; gap: 14px; }
-.group-head { display: flex; align-items: baseline; gap: 14px; }
-.group-head h2 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; }
-.group-head .rule { flex: 1; height: 1px; background: var(--line); }
-.group-head .count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-
-.card { background: var(--sheet); border: 1px solid var(--line); box-shadow: var(--shadow); display: grid; grid-template-rows: auto 1fr auto auto; min-width: 0; transition: transform 160ms ease, border-color 160ms ease; }
-.card:hover { transform: translateY(-2px); border-color: var(--ink); }
-.card-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px dashed var(--line); font-family: var(--font-mono); font-size: 12px; }
-.code { color: var(--accent); font-weight: 500; letter-spacing: 0.04em; }
-.badge { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 7px; border: 1px solid currentColor; color: var(--new); }
-.badge.beta { color: var(--accent); }
-.card-body { padding: 16px; display: grid; grid-template-columns: 52px 1fr; gap: 14px; align-items: start; }
-.icon { width: 52px; height: 52px; display: grid; place-items: center; border: 1.5px solid var(--ink); font-size: 22px; color: var(--ink); background: repeating-linear-gradient(135deg, transparent 0 6px, var(--grid) 6px 7px); }
-.card h3 { margin: 0 0 4px; font-family: var(--font-display); font-weight: 700; font-size: 25px; line-height: 1.05; text-transform: uppercase; text-wrap: balance; }
-.card p { margin: 0; color: var(--muted); font-size: 14px; }
-.tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 12px; }
-.tag { font-family: var(--font-mono); font-size: 11px; padding: 3px 7px; border: 1px solid var(--line); border-radius: 2px; white-space: nowrap; }
-.tag.v { border-color: transparent; background: var(--blue-soft); color: var(--blue); }
-.spec { margin: 0 16px; display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); }
-.spec div { padding: 6px 10px; border-left: 1px solid var(--line); display: grid; min-width: 0; }
-.spec div:first-child { border-left: 0; }
-.spec dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.spec dd { margin: 0; font-family: var(--font-mono); font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.actions { padding: 16px; }
-.btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; font-family: var(--font-display); font-weight: 600; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; padding: 11px 14px; border-radius: 2px; text-decoration: none; background: var(--accent); color: var(--accent-ink); border: 1.5px solid var(--accent); transition: filter 140ms ease; }
-.btn:hover { filter: brightness(1.08); }
-.btn small { font-family: var(--font-mono); font-size: 11.5px; font-weight: 400; letter-spacing: 0; opacity: 0.85; text-transform: none; }
-
-.empty { display: none; padding: 28px; text-align: center; color: var(--muted); border: 1px dashed var(--line); background: var(--sheet); font-family: var(--font-mono); font-size: 13px; }
-footer { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); border-top: 2px solid var(--ink); padding-top: 12px; }
-footer a { color: var(--blue); }
-
 @media (max-width: 760px) {
-  .titleblock { grid-template-columns: 1fr; }
-  .tb-main { border-right: 0; border-bottom: 2px solid var(--ink); }
-  .grid { grid-template-columns: 1fr; }
-  .search { flex: 1 1 100%; }
+  .tools, .faq { grid-template-columns: minmax(0, 1fr); }
+  .nav a:not(.keep) { display: none; }
+  .search { margin-left: 0; flex: 1 1 100%; }
+  .band { padding-block: 48px; }
+  .section-head h2 { font-size: 26px; }
 }
-@media (max-width: 420px) { .wrap { padding: 20px 16px 40px; } }
-@media (prefers-reduced-motion: reduce) { .card, .btn { transition: none; } .card:hover { transform: none; } }
+@media (max-width: 460px) {
+  .container { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .steps { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .tool { padding: 18px; }
+  .logo small { display: none; }
+  .pv-panel.opt { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .tool, .btn { transition: none; } }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header class="titleblock">
-    <div class="tb-main">
-      <div class="brand"><span class="brand-mark">S</span>SADA Engineering</div>
-      <h1>SADA <span>App</span> Store</h1>
-      <p class="lede">Revit add-ins, analysis tools and helper apps for structural and architectural work. Pick a tool, download it, and run the installer.</p>
-    </div>
-    <div class="tb-cells">
-      <div class="tb-cell"><span class="tb-label">Apps</span><span class="tb-value" id="stat-apps">7</span></div>
-      <div class="tb-cell"><span class="tb-label">Revit</span><span class="tb-value sm">2023&ndash;2027</span></div>
-      <div class="tb-cell"><span class="tb-label">Platforms</span><span class="tb-value sm">Windows &middot; Android</span></div>
-      <div class="tb-cell"><span class="tb-label">Updated</span><span class="tb-value sm">06 Nov 2026</span></div>
-    </div>
-  </header>
+<header class="topbar">
+  <div class="container">
+    <a class="logo" href="#top" aria-label="SADA Engineering, back to top">
+      <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h16M4 20h16M7 4v16M17 4v16M4 12h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span>
+      <span>SADA Engineering <small id="site-tag">App Store</small></span>
+    </a>
+    <nav class="nav" aria-label="Page sections">
+      <a href="#tools" class="keep">Tools</a>
+      <a href="#install">Installation</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
 
-  <div class="toolbar">
-    <div class="filters" role="group" aria-label="Filter by category" id="filters"></div>
-    <label class="search" for="q"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input id="q" type="search" placeholder="Search apps or Revit year" aria-label="Search apps" autocomplete="off">
-    </label>
+<main id="top">
+  <div class="container hero">
+    <div>
+      <span class="eyebrow">Revit 2023 to 2027 &middot; ETABS &middot; Android</span>
+      <h1>Revit add-ins for faster structural and architectural drawings</h1>
+      <p class="lede">Automatic dimensions, steel takeoff, room finishes, model checks and more. Every tool installs in about a minute into your own Windows account, so you never need an administrator password.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#tools">Browse the tools</a>
+        <a class="btn btn-secondary" href="#install">How installation works</a>
+      </div>
+      <ul class="facts">
+        <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No admin rights</li>
+        <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Finds your Revit versions</li>
+        <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>SHA-256 on every file</li>
+      </ul>
+    </div>
+
+    <figure class="preview" aria-label="Preview: the SADA Struct ribbon tab and a plan view whose grids and columns were dimensioned automatically" style="margin:0">
+      <div class="pv-bar"><span><b>Level 02</b> &middot; Structural plan</span><span>1 : 100</span></div>
+      <div class="pv-tabs" aria-hidden="true"><span>Architecture</span><span>Structure</span><span>Annotate</span><span>View</span><span class="on">SADA Struct</span></div>
+      <div class="pv-ribbon" aria-hidden="true">
+        <div class="pv-panel">
+          <div class="pv-btns">
+            <span class="pv-btn on"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="5" height="5" stroke="currentColor" stroke-width="2"/><rect x="15" y="15" width="5" height="5" stroke="currentColor" stroke-width="2"/><path d="M4 14v6M2 17h4" stroke="currentColor" stroke-width="2"/></svg></i>Column &amp; Axis</span>
+            <span class="pv-btn"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 9h18M3 15h18" stroke="currentColor" stroke-width="2"/></svg></i>Beam &amp; Axis</span>
+            <span class="pv-btn"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M7 3v6M17 3v6M5 21V11M19 21V11" stroke="currentColor" stroke-width="2"/></svg></i>Dimension Grids</span>
+          </div>
+          <span class="pv-name">Dimension</span>
+        </div>
+        <div class="pv-panel">
+          <div class="pv-btns">
+            <span class="pv-btn"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 18L9 6l5 12M6 14h6M15 15l2 2 4-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Spell Check</span>
+            <span class="pv-btn"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i>Model Check</span>
+          </div>
+          <span class="pv-name">Check</span>
+        </div>
+        <div class="pv-panel opt">
+          <div class="pv-btns">
+            <span class="pv-btn"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10 14l-4 4M14 10l4-4M8 8h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i>Link Builder</span>
+          </div>
+          <span class="pv-name">From link</span>
+        </div>
+      </div>
+      <svg class="pv-plan" viewBox="0 0 520 290" role="img" aria-label="Plan with four column grids at 6000 mm and three row grids at 5000 and 4000 mm, all dimensioned">
+        <!-- grid lines -->
+        <g>
+          <line class="g" x1="110" y1="58" x2="110" y2="272"/><line class="g" x1="230" y1="58" x2="230" y2="272"/>
+          <line class="g" x1="350" y1="58" x2="350" y2="272"/><line class="g" x1="470" y1="58" x2="470" y2="272"/>
+          <line class="g" x1="60" y1="120" x2="500" y2="120"/><line class="g" x1="60" y1="200" x2="500" y2="200"/><line class="g" x1="60" y1="264" x2="500" y2="264"/>
+        </g>
+        <!-- beams -->
+        <g>
+          <line class="beam" x1="110" y1="120" x2="470" y2="120"/><line class="beam" x1="110" y1="200" x2="470" y2="200"/><line class="beam" x1="110" y1="264" x2="470" y2="264"/>
+          <line class="beam" x1="110" y1="120" x2="110" y2="264"/><line class="beam" x1="230" y1="120" x2="230" y2="264"/><line class="beam" x1="350" y1="120" x2="350" y2="264"/><line class="beam" x1="470" y1="120" x2="470" y2="264"/>
+        </g>
+        <!-- columns -->
+        <g>
+          <rect class="col" x="103" y="113" width="14" height="14"/><rect class="col" x="223" y="113" width="14" height="14"/><rect class="col" x="343" y="113" width="14" height="14"/><rect class="col" x="463" y="113" width="14" height="14"/>
+          <rect class="col" x="103" y="193" width="14" height="14"/><rect class="col" x="223" y="193" width="14" height="14"/><rect class="col" x="343" y="193" width="14" height="14"/><rect class="col" x="463" y="193" width="14" height="14"/>
+          <rect class="col" x="103" y="257" width="14" height="14"/><rect class="col" x="223" y="257" width="14" height="14"/><rect class="col" x="343" y="257" width="14" height="14"/><rect class="col" x="463" y="257" width="14" height="14"/>
+        </g>
+        <!-- grid bubbles -->
+        <g>
+          <circle class="bubble" cx="110" cy="44" r="11"/><text class="bt" x="110" y="44">1</text>
+          <circle class="bubble" cx="230" cy="44" r="11"/><text class="bt" x="230" y="44">2</text>
+          <circle class="bubble" cx="350" cy="44" r="11"/><text class="bt" x="350" y="44">3</text>
+          <circle class="bubble" cx="470" cy="44" r="11"/><text class="bt" x="470" y="44">4</text>
+          <circle class="bubble" cx="32" cy="120" r="11"/><text class="bt" x="32" y="120">A</text>
+          <circle class="bubble" cx="32" cy="200" r="11"/><text class="bt" x="32" y="200">B</text>
+          <circle class="bubble" cx="32" cy="264" r="11"/><text class="bt" x="32" y="264">C</text>
+        </g>
+        <!-- dimension strings added by the tool -->
+        <g>
+          <line class="dim" x1="104" y1="84" x2="476" y2="84"/>
+          <line class="tick" x1="105" y1="89" x2="115" y2="79"/><line class="tick" x1="225" y1="89" x2="235" y2="79"/><line class="tick" x1="345" y1="89" x2="355" y2="79"/><line class="tick" x1="465" y1="89" x2="475" y2="79"/>
+          <text class="dt" x="170" y="78">6000</text><text class="dt" x="290" y="78">6000</text><text class="dt" x="410" y="78">6000</text>
+          <line class="dim" x1="74" y1="114" x2="74" y2="270"/>
+          <line class="tick" x1="69" y1="125" x2="79" y2="115"/><line class="tick" x1="69" y1="205" x2="79" y2="195"/><line class="tick" x1="69" y1="269" x2="79" y2="259"/>
+          <text class="dt" x="66" y="164" transform="rotate(-90 66 164)">5000</text><text class="dt" x="66" y="236" transform="rotate(-90 66 236)">4000</text>
+        </g>
+      </svg>
+      <div class="pv-status"><span class="dot"></span>12 columns and 7 grids dimensioned in one click</div>
+    </figure>
   </div>
 
-  <div class="notice" role="note">
-    <i class="fa-solid fa-key" aria-hidden="true"></i>
-    <span>The Revit add-ins ask for a <b>SADA activation key</b> the first time they start. Struct, Steel and Arch are activated separately; the Parapet Tool uses the Struct key. The setup files install for your Windows account only, so <b>no administrator rights</b> are needed. If Windows SmartScreen warns about an installer, choose <b>More info &gt; Run anyway</b>.</span>
-  </div>
+  <section id="tools" class="band band-alt" aria-labelledby="tools-h">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="tools-h">Tools</h2>
+          <p>Download a setup file, run it, and the tool appears in Revit the next time it starts.</p>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Filter by category" id="filters"></div>
+        <label class="search" for="q">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input id="q" type="search" placeholder="Search tools or a Revit year" aria-label="Search tools" autocomplete="off">
+        </label>
+      </div>
+      <div class="tools" id="list"></div>
+      <div class="empty" id="empty" hidden>No tool matches that search. Try a product name or a year such as 2025.</div>
+    </div>
+  </section>
 
-  <main id="store"></main>
-  <div class="empty" id="empty">No app matches that search.</div>
+  <section id="install" class="band" aria-labelledby="install-h">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="install-h">How installation works</h2>
+          <p>About a minute per tool. Nothing is written outside your own Windows user folder.</p>
+        </div>
+      </div>
+      <ol class="steps">
+        <li><h3>Download the setup file</h3><p>Choose a tool above and save its setup file. Windows 10 or 11, 64-bit.</p></li>
+        <li><h3>Run it</h3><p>If Windows SmartScreen shows a warning, choose <b>More info</b> and then <b>Run anyway</b>.</p></li>
+        <li><h3>Choose your Revit versions</h3><p>The versions installed on your PC are already ticked. Close those Revit sessions before you continue.</p></li>
+        <li><h3>Activate</h3><p>Start Revit, choose <b>Always Load</b>, and enter your SADA activation key.</p></li>
+      </ol>
+    </div>
+  </section>
 
-  <footer>
+  <section id="faq" class="band band-alt" aria-labelledby="faq-h">
+    <div class="container">
+      <div class="section-head"><div><h2 id="faq-h">Questions</h2></div></div>
+      <div class="faq">
+        <div>
+          <details><summary>Where are the files installed?</summary><p>Revit add-ins go to <code>%APPDATA%\Autodesk\Revit\Addins\&lt;year&gt;</code>. The ETABS Toolkit and File Renamer Pro go to <code>%LOCALAPPDATA%\Programs</code>. Struct Helper PC is portable and runs from wherever you unzip it.</p></details>
+          <details><summary>How do I update a tool?</summary><p>Download the newer setup file and run it over the old version. Your activation key and settings are kept.</p></details>
+          <details><summary>How do I remove a tool?</summary><p>Open Windows Settings, then Apps, then Installed apps. Find the SADA tool and choose Uninstall. Close Revit first.</p></details>
+        </div>
+        <div>
+          <details><summary>Which tools need an activation key?</summary><p>Struct, Steel and Arch are activated separately. The Parapet Tool uses the Struct key. The ETABS Toolkit, File Renamer Pro and the Struct Helper apps need no key.</p></details>
+          <details><summary>Why does Windows SmartScreen warn me?</summary><p>SmartScreen warns about setup files that are not yet widely downloaded. Choose More info, then Run anyway. You can confirm the file is genuine by checking its SHA-256, shown under Install details on each tool.</p></details>
+          <details><summary>How do I check a download?</summary><p>In PowerShell run <code>Get-FileHash .\SetupFile.exe</code>. The hash it prints must match the SHA-256 listed for that tool.</p></details>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
     <span>&copy; 2026 SADA Engineering</span>
-    <span>Installers and checksums: <a href="https://abdalla0120.github.io/sada-installers/" target="_blank" rel="noopener">abdalla0120.github.io/sada-installers</a></span>
-  </footer>
-</div>
+    <nav aria-label="Other SADA pages" id="foot-links">
+      <a href="https://abdalla0120.github.io/sada-installers/">Installers and checksums</a>
+      <a href="https://github.com/Abdalla0120/sada-installers/releases">All releases</a>
+    </nav>
+  </div>
+</footer>
 
 <script>
-var DL = "https://drive.google.com/uc?export=download&id=";
 var REL = "https://github.com/Abdalla0120/sada-installers/releases/latest/download/";
-var APPS = [
-  { code: "S-01", name: "SADA Struct Toolbox", group: "revit", icon: "fa-solid fa-building-columns", badge: "Updated",
-    desc: "Automatic dimensioning for concrete columns, beams, grids and foundations, drawing spell check, Link Builder, batch export and model checks.",
-    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Concrete", "No admin"], file: "Setup .exe", size: "84.6 MB", version: "2026.11.07",
-    url: REL + "SADA_Struct_Toolbox_Setup.exe" },
-  { code: "S-02", name: "SADA Steel Toolbox", group: "revit", icon: "fa-solid fa-i-cursor", badge: "Updated",
-    desc: "Steel edition: centreline dimensions, piece marks, steel takeoff, member check (AISC 360 / EC3), SAP2000 export and drawing spell check.",
-    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Steel", "No admin"], file: "Setup .exe", size: "2.5 MB", version: "1.0.0",
-    url: REL + "SADA_Steel_Toolbox_Setup.exe" },
-  { code: "A-01", name: "SADA Arch Toolbox", group: "revit", icon: "fa-solid fa-building", badge: "Updated",
-    desc: "Rebuilt for architects: rooms, room finishes, door and window marks, wall and room dimensions, interior elevations, sheets, model health and drawing spell check.",
-    tags: ["Revit 2023", "2024", "2025", "2026", "2027"], extra: ["Architecture", "No admin"], file: "Setup .exe", size: "2.4 MB", version: "1.0.0",
-    url: REL + "SADA_Arch_Toolbox_Setup.exe" },
-  { code: "R-01", name: "SADA Parapet Tool", group: "revit", icon: "fa-solid fa-border-all",
-    desc: "Places parapet posts and beams along the parapet walls of a linked architect model, batch by batch.",
-    tags: ["Revit 2023", "2024", "2025"], extra: ["Add-on", "No admin"], file: "Setup .exe", size: "2.1 MB", version: "1.0",
-    url: REL + "SADA_Parapet_Tool_Setup.exe" },
-  { code: "E-01", name: "SADA ETABS Toolkit", group: "analysis", icon: "fa-solid fa-diagram-project",
-    desc: "Works with a running ETABS or .s2k files: builds slabs from beam bays and fixes beams that look connected but are not.",
-    tags: ["ETABS 18\u201322+", "SAP2000 .s2k"], extra: ["Start menu", "No admin"], file: "Setup .exe", size: "2.1 MB", version: "1.0.0",
-    url: REL + "SADA_ETABS_Toolkit_Setup.exe" },
-  { code: "H-01", name: "SADA Struct Helper PC", group: "helper", icon: "fa-solid fa-desktop",
-    desc: "Desktop helper app that speeds up your structural workflow on a PC or laptop.",
-    tags: ["Windows"], extra: ["PC", "Laptop"], file: "Installer .exe", size: "54.9 MB", version: "1.0.0",
-    id: "1pRK-n3Eh4ftqBQ9dFKJy3CRwgYEz7G_6" },
-  { code: "H-02", name: "SADA Phone App", group: "helper", icon: "fa-solid fa-mobile-screen",
-    desc: "The SADA helper app for Android phones and tablets.",
-    tags: ["Android"], extra: ["Phone", "Tablet"], file: "APK", size: "65.7 MB", version: "1.0",
-    id: "1Qhxbtf09R2DwDLBSOSxMJOQGLKNiYCIX" }
-];
+var ICONS = {
+  struct: '<path d="M4 4h4v4H4zM16 4h4v4h-4zM4 16h4v4H4zM16 16h4v4h-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 6h8M8 18h8M6 8v8M18 8v8" stroke="currentColor" stroke-width="1.8"/>',
+  steel: '<path d="M5 4h14M5 20h14M12 4v16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  arch: '<path d="M4 4h16v16H4zM4 12h8v8M12 4v4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 12a4 4 0 0 1 4 4" stroke="currentColor" stroke-width="1.8"/>',
+  parapet: '<path d="M3 19h18M3 11h18M5 11v8M10 11v8M14 11v8M19 11v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  etabs: '<path d="M4 20V5h16v15M4 12.5h16M4 5l16 7.5M4 12.5l16 7.5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+  calc: '<rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 7h8M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  phone: '<rect x="7" y="2.5" width="10" height="19" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M11 18h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  rename: '<path d="M6 3h8l4 4v6M6 3v18h6M14 3v4h4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 21l1-3 4.5-4.5 2 2L17 20z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+};
 var GROUPS = [
   { id: "revit", label: "Revit add-ins" },
-  { id: "analysis", label: "Analysis tools" },
-  { id: "helper", label: "Desktop & mobile" }
+  { id: "analysis", label: "Analysis" },
+  { id: "apps", label: "Desktop & mobile" }
 ];
-
+var ITEMS = [
+  { name: "SADA Struct Toolbox", group: "revit", icon: "struct", kind: "Revit add-in for concrete", file: "SADA_Struct_Toolbox_Setup.exe", size: "84.6 MB", version: "2026.11.07",
+    desc: "Automatic dimensions for columns, beams, grids and foundations, plus drawing spell check, Link Builder, batch export and model checks.",
+    compat: ["Revit 2023 to 2027"], where: "%APPDATA%\\Autodesk\\Revit\\Addins\\<year>",
+    sha: "421ab71b898982be8f1d0994f9fd52d409a3a6c2684482ce3119997ce63bf871", badge: "Updated" },
+  { name: "SADA Steel Toolbox", group: "revit", icon: "steel", kind: "Revit add-in for steel", file: "SADA_Steel_Toolbox_Setup.exe", size: "2.5 MB", version: "1.0.0",
+    desc: "Centreline dimensions, piece marks, steel takeoff, member checks to AISC 360 and EC3, SAP2000 export and drawing spell check.",
+    compat: ["Revit 2023 to 2027"], where: "%APPDATA%\\Autodesk\\Revit\\Addins\\<year>\\SADASteelToolbox",
+    sha: "3b66adab42638c6f94ece353e48fbde1739680c670e7c4962aecd4214f0b888f", badge: "Updated" },
+  { name: "SADA Arch Toolbox", group: "revit", icon: "arch", kind: "Revit add-in for architecture", file: "SADA_Arch_Toolbox_Setup.exe", size: "2.4 MB", version: "1.1.0",
+    desc: "Rooms, finishes, door and window marks, wall and room dimensions, interior elevations, sheets and model health. Version 1.1 adds 15 tools, including CAD lines to walls, Excel room sync and enlarged plans. Every button explains itself on hover.",
+    compat: ["Revit 2023 to 2027"], where: "%APPDATA%\\Autodesk\\Revit\\Addins\\<year>\\SADAArchToolbox",
+    sha: "4e01c51b7d98190bdc34b6117c77965acac728cfbd48ca1dc3714007e30a526f", badge: "Updated" },
+  { name: "SADA Parapet Tool", group: "revit", icon: "parapet", kind: "Revit add-in", file: "SADA_Parapet_Tool_Setup.exe", size: "2.1 MB", version: "1.0",
+    desc: "Places parapet posts and beams along the parapet walls of a linked architectural model. Uses your Struct activation key.",
+    compat: ["Revit 2023 to 2025"], where: "%APPDATA%\\Autodesk\\Revit\\Addins\\<year>\\SADAParapetTool",
+    sha: "90208db74f43f3fd105e02c3d8beaf620ab013e65c4864d1aafa5bd3f95dcfc5" },
+  { name: "SADA ETABS Toolkit", group: "analysis", icon: "etabs", kind: "Windows app for ETABS", file: "SADA_ETABS_Toolkit_Setup.exe", size: "2.1 MB", version: "1.0.0",
+    desc: "Works with a running ETABS model or a .s2k file. Builds slabs from beam bays and fixes beams that look connected but are not.",
+    compat: ["ETABS 18 to 22+", "SAP2000 .s2k"], where: "%LOCALAPPDATA%\\Programs\\SADA ETABS Toolkit",
+    sha: "ab60d0137caf99d7db03452a9b41aae7d823c763daf88d4e05e8e2ba6379b89c" },
+  { name: "SADA Struct Helper PC", group: "apps", icon: "calc", kind: "Windows app, portable", file: "SADA_Struct_Helper_PC_Portable.zip", size: "87.9 MB", version: "2.0.0", btn: "Download zip",
+    desc: "Engineering calculator with equations, matrices, complex numbers and statistics, plus 26 structural tools for concrete, steel, foundations, loads and estimating. Unzip and run.",
+    compat: ["Windows 10 / 11"], where: "Unzip anywhere and run \"SADAStruct Helper PC.exe\"",
+    sha: "9989177996403b2a968a8c32ef19c78fe907b584f621d75b113be78b48f1b419", badge: "New" },
+  { name: "SADA Struct Helper Android", group: "apps", icon: "phone", kind: "Android app", file: "SADA_Struct_Helper_Android.apk", size: "47.0 MB", version: "2.0", btn: "Download APK",
+    desc: "The same calculator and 26 structural tools on your phone, with PDF calculation reports and an AI calculator builder that uses your Gemini API key.",
+    compat: ["Android 12+"], where: "Open the APK on your phone and allow \"Install unknown apps\"",
+    sha: "5774f2eda9988ba68a5747eb69ce4c18efc6f4562df9641d83cf16c6755a674d", badge: "New" },
+  { name: "File Renamer Pro", group: "apps", icon: "rename", kind: "Windows app", file: "SADA_File_Renamer_Pro_Setup.exe", size: "2.1 MB", version: "2.0.0",
+    desc: "Bulk-rename drawings by changing only the parts of the name you pick, such as SD-ST-ZA-P1. Live preview, duplicate checks, presets, undo, and a right-click entry on folders.",
+    compat: ["Windows 10 / 11"], where: "%LOCALAPPDATA%\\Programs\\File Renamer Pro",
+    sha: "a2ebdb6a5d27592b1fb8447852c6b7361317ee0a6f6882d215f3e8604ab91fa8", badge: "New" }
+];
+var GROUP_LABEL = {}; GROUPS.forEach(function (g) { GROUP_LABEL[g.id] = g.label; });
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+var DL_ICON = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5v7.5m0 0L5 7m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-function card(a) {
-  var badge = a.badge ? '<span class="badge">' + esc(a.badge) + '</span>' : '<span></span>';
-  var search = [a.name, a.desc, a.file].concat(a.tags, a.extra).join(" ").toLowerCase();
-  return '<article class="card" data-search="' + esc(search) + '">' +
-    '<div class="card-top"><span class="code">' + a.code + '</span>' + badge + '</div>' +
-    '<div class="card-body"><div class="icon"><i class="' + a.icon + '" aria-hidden="true"></i></div>' +
-      '<div><h3>' + esc(a.name) + '</h3><p>' + esc(a.desc) + '</p></div></div>' +
-    '<div><div class="tags">' + a.tags.map(function (t) { return '<span class="tag v">' + esc(t) + '</span>'; }).join("") +
-      a.extra.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join("") + '</div>' +
-      '<dl class="spec"><div><dt>Version</dt><dd>' + esc(a.version) + '</dd></div><div><dt>File</dt><dd title="' + esc(a.file) + '">' + esc(a.file) + '</dd></div><div><dt>Size</dt><dd>' + esc(a.size) + '</dd></div></dl></div>' +
-    '<div class="actions"><a class="btn" href="' + (a.url || (DL + a.id)) + '" target="_blank" rel="noopener"><i class="fa-solid fa-download" aria-hidden="true"></i> Download <small>' + esc(a.size) + '</small></a></div>' +
+function card(a, i) {
+  var badge = a.badge ? '<span class="badge' + (a.badge === "Updated" ? " updated" : "") + '">' + esc(a.badge) + '</span>' : "";
+  var search = [a.name, a.kind, a.desc, a.file, GROUP_LABEL[a.group]].concat(a.compat).join(" ").toLowerCase();
+  if (/revit 2023 to 2027/.test(search)) search += " 2023 2024 2025 2026 2027";
+  if (/revit 2023 to 2025/.test(search)) search += " 2023 2024 2025";
+  return '<article class="tool" data-group="' + a.group + '" data-search="' + esc(search) + '">' +
+    '<div class="tool-head"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">' + ICONS[a.icon] + '</svg></span>' +
+      '<div class="tool-id"><h3>' + esc(a.name) + '</h3><div class="kind">' + esc(a.kind) + ' &middot; v' + esc(a.version) + '</div></div>' + badge + '</div>' +
+    '<p class="desc">' + esc(a.desc) + '</p>' +
+    '<div class="compat">' + a.compat.map(function (t) { return '<span class="chip">' + esc(t) + '</span>'; }).join("") + '</div>' +
+    '<dl class="meta" id="meta-' + i + '" hidden>' +
+      '<div><dt>File</dt><dd>' + esc(a.file) + '</dd></div>' +
+      '<div><dt>Installs to</dt><dd>' + esc(a.where) + '</dd></div>' +
+      '<div><dt>SHA-256</dt><dd class="hash"><code>' + a.sha + '</code><button class="copy" type="button" data-sha="' + a.sha + '" aria-label="Copy the SHA-256 of ' + esc(a.name) + '">Copy</button></dd></div>' +
+    '</dl>' +
+    '<div class="tool-foot"><a class="btn btn-primary" href="' + REL + a.file + '">' + DL_ICON + esc(a.btn || "Download") + ' <span class="size">' + a.size + '</span></a>' +
+      '<button class="btn btn-quiet" type="button" data-meta="meta-' + i + '" aria-expanded="false" aria-controls="meta-' + i + '">Install details</button></div>' +
   '</article>';
 }
 
 var active = "all";
 function renderFilters() {
-  var opts = [{ id: "all", label: "All apps" }].concat(GROUPS);
+  var opts = [{ id: "all", label: "All" }].concat(GROUPS);
   document.getElementById("filters").innerHTML = opts.map(function (o) {
-    var n = o.id === "all" ? APPS.length : APPS.filter(function (a) { return a.group === o.id; }).length;
-    return '<button class="chip" type="button" data-f="' + o.id + '" aria-pressed="' + (o.id === active) + '">' + o.label + '<span class="n">' + n + '</span></button>';
+    var n = o.id === "all" ? ITEMS.length : ITEMS.filter(function (a) { return a.group === o.id; }).length;
+    return '<button type="button" data-f="' + o.id + '" aria-pressed="' + (o.id === active) + '">' + esc(o.label) + ' <span class="n">' + n + '</span></button>';
   }).join("");
 }
-function render() {
+function applyFilter() {
   var q = document.getElementById("q").value.trim().toLowerCase(), shown = 0;
-  document.getElementById("store").innerHTML = GROUPS.filter(function (g) { return active === "all" || g.id === active; }).map(function (g) {
-    var items = APPS.filter(function (a) { return a.group === g.id; });
-    return '<section class="group"><div class="group-head"><h2>' + g.label + '</h2><span class="rule"></span><span class="count">' + items.length + ' apps</span></div><div class="grid">' + items.map(card).join("") + '</div></section>';
-  }).join("");
-  document.querySelectorAll("#store .group").forEach(function (sec) {
-    var vis = 0;
-    sec.querySelectorAll(".card").forEach(function (c) { var ok = !q || c.dataset.search.indexOf(q) !== -1; c.hidden = !ok; if (ok) vis++; });
-    sec.hidden = vis === 0; shown += vis;
+  document.querySelectorAll("#list .tool").forEach(function (c) {
+    var ok = (active === "all" || c.getAttribute("data-group") === active) && (!q || c.getAttribute("data-search").indexOf(q) !== -1);
+    c.hidden = !ok; if (ok) shown++;
   });
-  document.getElementById("empty").style.display = shown ? "none" : "block";
+  document.getElementById("empty").hidden = shown !== 0;
 }
+document.getElementById("list").innerHTML = ITEMS.map(card).join("");
+renderFilters(); applyFilter();
+
 document.getElementById("filters").addEventListener("click", function (e) {
   var b = e.target.closest("[data-f]"); if (!b) return;
-  active = b.getAttribute("data-f"); renderFilters(); render();
+  active = b.getAttribute("data-f"); renderFilters(); applyFilter();
 });
-document.getElementById("q").addEventListener("input", render);
-document.getElementById("stat-apps").textContent = APPS.length;
-renderFilters(); render();
+document.getElementById("q").addEventListener("input", applyFilter);
+document.getElementById("list").addEventListener("click", function (e) {
+  var t = e.target.closest("[data-meta]");
+  if (t) {
+    var m = document.getElementById(t.getAttribute("data-meta"));
+    m.hidden = !m.hidden; t.setAttribute("aria-expanded", String(!m.hidden));
+    t.textContent = m.hidden ? "Install details" : "Hide details";
+    return;
+  }
+  var b = e.target.closest(".copy"); if (!b) return;
+  var code = b.previousElementSibling;
+  function done() { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy"; }, 1500); }
+  function fallback() {
+    try { var r = document.createRange(); r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Press Ctrl+C"; } catch (err) {}
+  }
+  try { navigator.clipboard.writeText(b.getAttribute("data-sha")).then(done, fallback); } catch (err) { fallback(); }
+});
+// In-page links scroll here instead of navigating, so they also work inside the store's embedded frame.
+document.addEventListener("click", function (e) {
+  var a = e.target.closest('a[href^="#"]'); if (!a) return;
+  var el = document.getElementById(a.getAttribute("href").slice(1)); if (!el) return;
+  e.preventDefault(); el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+});
 </script>
 </body>
 </html>
